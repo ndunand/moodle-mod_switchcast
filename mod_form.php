@@ -273,7 +273,10 @@ class mod_switchcast_mod_form extends moodleform_mod {
             $scobj->setExtId($ext_id);
             // first, add SysAccount as producer (using $USER account), so we can use SysAccount later to make API calls
             $scobj->addProducer($scobj->getSysAccountOfUser(), false);
-            $thechannel = $scobj->doRead($ext_id, !empty($this->_instance));
+            $channelid = (empty($this->_instance)) ? ($ext_id) : ($this->current->id);
+            // if there already is one instance we must refer to it by its Moodle ID otherwise there could
+            // be several records!
+            $thechannel = $scobj->doRead($channelid, !empty($this->_instance));
             if (trim((string)$thechannel->access) == 'external_authority' && (int)$thechannel->external_authority_id != $scobj->getValueByKey('external_authority_id')) {
                 // we can't steal external_authority from another institution
                 $errors['ext_id'] = get_string('channelhasotherextauth', 'switchcast', $scobj->getExternalAuthName($thechannel->external_authority_id));

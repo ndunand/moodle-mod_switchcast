@@ -216,8 +216,6 @@ class scast_obj {
 	 */
 	public function addProducer($aaiUniqueId, $usesysaccount = true) {
 
-//        die('notallowed: '. $this->organization_domain .'=='. self::getOrganizationByEmail($aaiUniqueId));
-
         if ( ! $this->isAllowedAsPublisher($aaiUniqueId) ) {
             // only add producers from the same institution as the channel's
             return false;
@@ -230,8 +228,8 @@ class scast_obj {
         else {
             $scuser = new scast_user();
             if (!$this->isProducer($scuser->getExternalAccount())) {
-                $pr = implode($this->getProducers());
-                die ($scuser->getExternalAccount().'not producer : '.$pr);
+                $pr = implode(', ', $this->getProducers());
+                return false;
             }
             $url .= '/users/' . $scuser->getExternalAccount();
         }
