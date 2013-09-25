@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/switchcast/db" VERSION="20130508" COMMENT="XMLDB file for Moodle mod/switchcast"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="switchcast" COMMENT="SWITCHcast module instances" NEXT="switchcast_cmember">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="ext_id"/>
+        <FIELD NAME="ext_id" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="SWITCHcast channel ID" PREVIOUS="id" NEXT="course"/>
+        <FIELD NAME="course" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="false" PREVIOUS="ext_id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="course" NEXT="intro"/>
+        <FIELD NAME="intro" TYPE="text" NOTNULL="true" SEQUENCE="false" PREVIOUS="name" NEXT="introformat"/>
+        <FIELD NAME="introformat" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="false" PREVIOUS="intro" NEXT="is_ivt"/>
+        <FIELD NAME="is_ivt" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="introformat" NEXT="inviting"/>
+        <FIELD NAME="inviting" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="is_ivt" NEXT="organization_domain"/>
+        <FIELD NAME="organization_domain" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="inviting"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="idx_ext_id" UNIQUE="false" FIELDS="ext_id"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="switchcast_cmember" COMMENT="SWITCHcast clip members (i.e. invitations)" PREVIOUS="switchcast">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="clip_ext_id"/>
+        <FIELD NAME="clip_ext_id" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="false" PREVIOUS="clip_ext_id" NEXT="courseid"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="false" PREVIOUS="userid" NEXT="switchcastid"/>
+        <FIELD NAME="switchcastid" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="false" PREVIOUS="courseid"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="foreign_userid"/>
+        <KEY NAME="foreign_userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" PREVIOUS="primary" NEXT="foreign_courseid"/>
+        <KEY NAME="foreign_courseid" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id" PREVIOUS="foreign_userid" NEXT="foreign_switchcastid"/>
+        <KEY NAME="foreign_switchcastid" TYPE="foreign" FIELDS="switchcastid" REFTABLE="switchcast" REFFIELDS="id" PREVIOUS="foreign_courseid"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>
