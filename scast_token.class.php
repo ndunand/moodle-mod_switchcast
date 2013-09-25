@@ -62,7 +62,7 @@ class scast_token {
 
         $private_key = openssl_get_privatekey('file://'.scast_obj::getValueByKey('serverkey_file'), scast_obj::getValueByKey('serverkey_password'));
         if ($private_key === false) {
-            print_error('error_opening_privatekey', 'switchcast', '', 'file:/'.scast_obj::getValueByKey('castkey_file'));
+            print_error('error_opening_privatekey', 'switchcast', '', 'file:/'.scast_obj::getValueByKey('serverkey_file'));
         }
 
         openssl_private_decrypt($encrypted_token, $decrypted_token, $private_key);

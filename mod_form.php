@@ -48,7 +48,6 @@ class mod_switchcast_mod_form extends moodleform_mod {
             // $USER has a SWITCHaai account, but we don't have a sys_account for his HomeOrganization.
             // Therefore, we prevent him from going any further.
             print_error('user_homeorgnotenabled', 'switchcast', new moodle_url('/course/view.php', array('id' => (int)$this->current->course)), scast_obj::getOrganizationByEmail($scuser->getExternalAccount()));
-            // TODO ND : check with MS whether that's really what we intended
         }
 
         if ($scuser->getExternalAccount() != '') {

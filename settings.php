@@ -107,17 +107,17 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configfile('switchcast/cacrt_file',
             get_string('cacrt_file', 'switchcast'),
             get_string('cacrt_file_desc', 'switchcast'),
-            $CFG->dirroot.'/mod/switchcast/certificates/QuoVadisRootCA2'));
+            $CFG->dataroot.'/mod/switchcast/certificates/QuoVadisRootCA2'));
 
     $settings->add(new admin_setting_configfile('switchcast/crt_file',
             get_string('crt_file', 'switchcast'),
             get_string('crt_file_desc', 'switchcast'),
-            $CFG->dirroot.'/mod/switchcast/certificates/certificate.crt'));
+            $CFG->dataroot.'/mod/switchcast/certificates/certificate.crt'));
 
     $settings->add(new admin_setting_configfile('switchcast/castkey_file',
             get_string('castkey_file', 'switchcast'),
             get_string('castkey_file_desc', 'switchcast'),
-            $CFG->dirroot.'/mod/switchcast/certificates/keyfile.key'));
+            $CFG->dataroot.'/mod/switchcast/certificates/keyfile.key'));
 
     $settings->add(new admin_setting_configpasswordunmask('switchcast/castkey_password',
             get_string('castkey_password', 'switchcast'),
@@ -127,7 +127,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configfile('switchcast/serverkey_file',
             get_string('serverkey_file', 'switchcast'),
             get_string('serverkey_file_desc', 'switchcast'),
-            $CFG->dirroot.'/mod/switchcast/certificates/keyfile.key'));
+            $CFG->dataroot.'/mod/switchcast/certificates/keyfile.key'));
 
     $settings->add(new admin_setting_configpasswordunmask('switchcast/serverkey_password',
             get_string('serverkey_password', 'switchcast'),
