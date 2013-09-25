@@ -64,14 +64,6 @@ $string['yourselection'] = 'Your selection';
 $string['skipresultgraph'] = 'Skip result graph';
 $string['moveselectedusersto'] = 'Move selected users to...';
 $string['numberofuser'] = 'The number of user';
-
-
-
-
-
-
-
-
 $string['uid_field'] = 'AAI unique ID field';
 $string['uid_field_desc'] = 'User profile field containing the AAI unique ID, of the form &lt;fieldname&gt; OR &lt;table::fieldid&gt;.';
 $string['switch_api_host'] = 'SWITCHcast API URL';
@@ -199,3 +191,6 @@ $string['xml_cache_time_desc'] = 'How long, in seconds, should the XML responses
 $string['removeowner'] = 'Remove owner';
 $string['channeldoesntexist'] = 'The linked channel does not exist (anymore?)';
 $string['channeldoesnotbelong'] = 'The linked channel belongs to another organization ({$a}); therefore, you cannot modify it. Only a teacher from {$a} can modify it.';
+$string['switch_api_down'] = 'The SwitchCast server is not responding.';
+$string['xml_fail'] = 'Error communicating with the SwitchCast server.';
+$string['badorganization'] = 'This channel\'s organization is not configured correctly.';

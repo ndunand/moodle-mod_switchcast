@@ -65,6 +65,10 @@ if (! $context = get_context_instance(CONTEXT_MODULE, $cm->id)) {
     print_error('badcontext', null, $return_course);
 }
 
+if (! in_array($switchcast->organization_domain, scast_obj::getEnabledOrgnanizations())) {
+    print_error('badorganization', 'switchcast', $return_course);
+}
+
 $PAGE->set_title(format_string($switchcast->name));
 $PAGE->set_heading($course->fullname);
 

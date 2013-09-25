@@ -64,8 +64,6 @@ $string['yourselection'] = 'Votre sélection';
 $string['skipresultgraph'] = 'Ne pas afficher le graphique des résultats';
 $string['moveselectedusersto'] = 'Déplacer l\'utilisateur sélectionné vers...';
 $string['numberofuser'] = 'Nombre d\'utilisateurs';
-
-
 $string['uid_field'] = 'SWITCHaai unique ID';
 $string['uid_field_desc'] = 'Profil d\'utilisateur qui contient le SWITCHaai unique ID, sous la forme &lt;fieldname&gt; OR &lt;table::fieldid&gt;.';
 $string['switch_api_host'] = 'SWITCHcast API URL';
@@ -111,8 +109,7 @@ $string['logging_enabled_desc'] = 'Enregistrer tous les appels et réponses XML 
 $string['display_select_columns'] = 'Afficher seulement les colonnes effectivement utilisées';
 $string['display_select_columns_desc'] = 'Dans la liste des clips, afficher seulement les champs (colonnes) utilisés, comme par exemple Station d\'enregistrement, Propriétaire, Actions. Ce choix a un impact sur la performance, parce que la liste de tous les clips doit être téléchargée pour chaque affichage.';
 $string['enabled_templates'] = 'Templates activés';
-$string['enabled_templates_desc'] = 'Listez ici tous les templates SWITCHcast que vous voulez activer pour votre institution; le choix du template est seulement possible au moment de la création d\'un nouveau canal. Une définition par ligne, avec le format suivant:
-<em>&lt;TEMPLATE_ID&gt;::&lt;TEMPLATE_NAME&gt;</em>.<br />Si vous voulez utiliser pour un template le nom officiel de SWITCH, vous pouvez omettre l\'élément TEMPLATE_NAME (mais pas les séparateurs).';
+$string['enabled_templates_desc'] = 'Listez ici tous les templates SWITCHcast que vous voulez activer pour votre institution; le choix du template est seulement possible au moment de la création d\'un nouveau canal. Une définition par ligne, avec le format suivant : <em>&lt;TEMPLATE_ID&gt;::&lt;TEMPLATE_NAME&gt;</em>.<br />Si vous voulez utiliser pour un template le nom officiel de SWITCH, vous pouvez omettre l\'élément TEMPLATE_NAME (mais pas les séparateurs).';
 $string['newchannelname'] = 'Nom du nouveau canal';
 $string['license'] = 'Licence';
 $string['disciplin'] = 'Discipline';
@@ -194,5 +191,8 @@ $string['xml_cache_time_desc'] = 'Pour combien de temps (en secondes) les répon
 $string['removeowner'] = 'Retirer le propriétaire';
 $string['channeldoesntexist'] = 'Le canal lié n\'existe pas (plus ?)';
 $string['channeldoesnotbelong'] = 'Le canal lié appartient à une autre organisation ({$a}) ; vous ne pouvez donc pas le modifier. Seul un enseignant de {$a} peut le modifier.';
+$string['switch_api_down'] = 'Le serveur SwitchCast ne répond pas.';
+$string['xml_fail'] = 'Erreur de communication avec le serveur SwitchCast.';
+$string['badorganization'] = 'L\'organisation liée à ce canal n\'est pas configurée correctement.';
 
 

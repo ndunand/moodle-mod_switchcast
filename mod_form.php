@@ -50,6 +50,10 @@ class mod_switchcast_mod_form extends moodleform_mod {
             print_error('user_homeorgnotenabled', 'switchcast', new moodle_url('/course/view.php', array('id' => (int)$this->current->course)), scast_obj::getOrganizationByEmail($scuser->getExternalAccount()));
         }
 
+        if (!empty($this->_instance) && !in_array($this->current->organization_domain, scast_obj::getEnabledOrgnanizations())) {
+            print_error('badorganization', 'switchcast', new moodle_url('/course/view.php', array('id' => (int)$this->current->course)));
+        }
+
         if ($scuser->getExternalAccount() != '') {
             // $USER has a SWITCHaai account, so register him at SwitchCast to make sure it exists there
             scast_obj::registerUser($scuser);
