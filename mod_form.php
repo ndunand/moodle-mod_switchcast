@@ -227,7 +227,7 @@ class mod_switchcast_mod_form extends moodleform_mod {
         }
       
         // What if the channel does not exist any more?
-        if ( scast_obj::getOrganizationByEmail($scuser->getExternalAccount()) == $this->current->organization_domain && !empty($this->_instance) && !isset($channels[$this->current->ext_id]) ) {
+        if (  !empty($this->_instance) && scast_obj::getOrganizationByEmail($scuser->getExternalAccount()) == $this->current->organization_domain && !isset($channels[$this->current->ext_id]) ) {
             $mform->removeElement('inviting');
             $mform->removeElement('is_ivt');
             $mform->removeElement('template_id');
