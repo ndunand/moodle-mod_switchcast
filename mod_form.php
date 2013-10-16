@@ -274,8 +274,12 @@ class mod_switchcast_mod_form extends moodleform_mod {
             $scobj = new scast_obj();
             $ext_id = isset($data['ext_id']) ? ($data['ext_id']) : ($this->current->ext_id);
             $scobj->setExtId($ext_id);
+            $sysaccount_extid = scast_obj::getSysAccountOfUser();
+            // we must explicitly set $USER as a producer in $scobj or we won't be allowed to add his system_user
+            $scobj->setOrganizationDomain(scast_obj::getOrganizationByEmail($sysaccount_extid));
+            $scobj->setProducer($scuser->getExternalAccount());
             // first, add SysAccount as producer (using $USER account), so we can use SysAccount later to make API calls
-            $scobj->addProducer($scobj->getSysAccountOfUser(), false);
+            $scobj->addProducer($sysaccount_extid, false);
             $channelid = (empty($this->_instance)) ? ($ext_id) : ($this->current->id);
             // if there already is one instance we must refer to it by its Moodle ID otherwise there could
             // be several records!
