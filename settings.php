@@ -134,6 +134,10 @@ if ($ADMIN->fulltree) {
             get_string('serverkey_password_desc', 'switchcast'),
             '', PARAM_RAW_TRIMMED));
 
+    $settings->add(new admin_setting_configtext('switchcast/curl_proxy',
+            get_string('curl_proxy', 'switchcast'),
+            get_string('curl_proxy_desc', 'switchcast'),
+            '', PARAM_URL));
 
 }
 

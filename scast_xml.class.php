@@ -94,6 +94,9 @@ class scast_xml {
                 curl_setopt($ch, CURLOPT_SSLKEYPASSWD, scast_obj::getValueByKey('castkey_password'));
             }
             curl_setopt($ch, CURLOPT_URL, $a_url);
+            if(scast_obj::getValueByKey('curl_proxy')) {
+                curl_setopt($ch, CURLOPT_PROXY, scast_obj::getValueByKey('curl_proxy'));
+            }
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $a_xml);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: text/xml"));

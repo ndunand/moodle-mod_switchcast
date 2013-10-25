@@ -195,3 +195,5 @@ $string['channeldoesnotbelong'] = 'The linked channel belongs to another organiz
 $string['switch_api_down'] = 'The SwitchCast server is not responding.';
 $string['xml_fail'] = 'Error communicating with the SwitchCast server.';
 $string['badorganization'] = 'This channel\'s organization is not configured correctly.';
+$string['curl_proxy'] = 'curl proxy';
+$string['curl_proxy_desc'] = 'If curl has to use a proxy, define it here in the form <em>proxyhostname:port</em>';
