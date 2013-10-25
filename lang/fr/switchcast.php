@@ -136,6 +136,7 @@ $string['edit_at_switch_short'] = 'Editer sur SWITCHcast';
 $string['switchcast:use'] = 'Afficher le contenu du canal SWITCHcast';
 $string['switchcast:isproducer'] = 'Enregistré comme producteur du canal SWITCHcast (et donc avec accès à tous les clips)';
 $string['switchcast:addinstance'] = 'Ajouter une nouvelle activité SWITCHcast';
+$string['switchcast:seeallclips'] = 'Peut voir tous les clips dans un cours';
 $string['nologfilewrite'] = 'Impossible d\'écrire le fichier journal : {$a}. Vérifiez les permissions du système de fichiers.';
 $string['noclipsinchannel'] = 'Ce canal ne contient pas de clips.';
 $string['novisibleclipsinchannel'] = 'Ce canal ne contient pas de clips auxquels vous ayez accès.';
@@ -194,5 +195,3 @@ $string['channeldoesnotbelong'] = 'Le canal lié appartient à une autre organis
 $string['switch_api_down'] = 'Le serveur SwitchCast ne répond pas.';
 $string['xml_fail'] = 'Erreur de communication avec le serveur SwitchCast.';
 $string['badorganization'] = 'L\'organisation liée à ce canal n\'est pas configurée correctement.';
-
-

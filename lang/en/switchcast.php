@@ -136,6 +136,7 @@ $string['edit_at_switch_short'] = 'Edit at SWITCHcast';
 $string['switchcast:use'] = 'Display SWITCHcast channel contents';
 $string['switchcast:isproducer'] = 'Be registered as a SWITCHcast channel producer (and hence access all clips)';
 $string['switchcast:addinstance'] = 'Add a new SWITCHcast channel activity';
+$string['switchcast:seeallclips'] = 'Can see all clips in the course';
 $string['nologfilewrite'] = 'Log file not writeable: {$a}. Check file system permissions.';
 $string['noclipsinchannel'] = 'This channel contains no clips.';
 $string['novisibleclipsinchannel'] = 'This channel contains no clips that you have access to.';
