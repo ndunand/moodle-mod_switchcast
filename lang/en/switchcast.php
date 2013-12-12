@@ -197,3 +197,5 @@ $string['xml_fail'] = 'Error communicating with the SwitchCast server.';
 $string['badorganization'] = 'This channel\'s organization is not configured correctly.';
 $string['curl_proxy'] = 'curl proxy';
 $string['curl_proxy_desc'] = 'If curl has to use a proxy, define it here in the form <em>proxyhostname:port</em>';
+$string['moodleaccessonly'] = 'This clip can only be accessed from within a Moodle activity.';
+$string['loggedout'] = 'You have been logged out. Please refresh the page.';

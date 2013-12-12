@@ -53,9 +53,10 @@ class scast_clip {
      * @param scast_obj $a_obj_scast SWITCHcast channel the clip belongs to
      * @param string $clip_ext_id clip ID as SWITCHcast
      */
-    public function __construct(scast_obj $a_obj_scast, $clip_ext_id, $isempty = false) {
+    public function __construct(scast_obj $a_obj_scast, $clip_ext_id, $isempty = false, $switchcast_id = 0) {
         if (!$isempty) {
             $this->scast_obj = $a_obj_scast;
+            $this->switchcast_id = $switchcast_id;
     //		$this->obj_id = $a_obj_scast->obj_id;
             $this->channel_ext_id = $a_obj_scast->getExtId();
             $this->sys_account = $a_obj_scast->getSysAccount();
@@ -87,6 +88,7 @@ class scast_clip {
 		$this->setExtId((string) $simplexmlobj->ext_id);
 		$this->setOwner((string) $simplexmlobj->ivt__owner);
 		$this->setTitle((string) $simplexmlobj->title);
+		$this->setSubtitle((string) $simplexmlobj->subtitle);
 		$this->setLocation((string) $simplexmlobj->location);
 		$this->setPresenter((string) $simplexmlobj->presenter);
 //		$this->setRecordingDate((string) $simplexmlobj->recording_date);
@@ -117,8 +119,16 @@ class scast_clip {
      * @return string the URL
      */
     private function getUrlFor(SimpleXMLElement $simplexmlobj,  $label = '') {
+        global $CFG;
         foreach ($simplexmlobj->urls->url as $url) {
             if (((string) $url['label']) == $label) {
+                if (in_array($label, array('Flash', 'QuickTime', 'iPod', 'Annotate clip'))) {
+                    $link  = $CFG->wwwroot . '/mod/switchcast/goTo.php';
+                    $link .= '?url=' . base64_encode( (string)$url );
+                    $link .= '&swid=' . $this->switchcast_id;
+                    $link .= '&tk=' . sha1( scast_obj::getValueByKey('default_sysaccount') . $this->switchcast_id . (string)$url );
+                    return $link;
+                }
                 return (string)$url;
             }
         }

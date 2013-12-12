@@ -162,6 +162,16 @@
     width: 100%;
     margin: 0 -6px;
     padding: 4px 6px;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}
+
+.path-mod-switchcast table.switchcast-clips div.cliplabel h3 div.subtitle {
+    font-size: 9px;
+    padding: 0 5px;
+    display: none;
 }
 
 .path-mod-switchcast table.switchcast-clips div.cliplabel div.linkbar {

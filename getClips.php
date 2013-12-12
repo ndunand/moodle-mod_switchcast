@@ -27,6 +27,12 @@
 
 require_once('../../config.php');
 
+if (!isloggedin()) {
+    $error = array('error' => get_string('loggedout', 'switchcast'));
+    echo json_encode($error);
+    exit;
+}
+
 require_once($CFG->dirroot.'/mod/switchcast/scast_obj.class.php');
 require_once($CFG->dirroot.'/mod/switchcast/scast_xml.class.php');
 require_once($CFG->dirroot.'/mod/switchcast/scast_user.class.php');
@@ -37,7 +43,11 @@ $filterstr      = optional_param('filterstr', '', PARAM_RAW_TRIMMED);
 $sortkey        = optional_param('sortkey', 'sortablerecordingdate', PARAM_ALPHAEXT);
 $sortdir        = optional_param('sortdir', 'asc', PARAM_ALPHA);
 $offset         = optional_param('offset', 0, PARAM_INT);
-$length         = optional_param('length', 10, PARAM_INT);
+if (!isset($SESSION->modswitchcast_clipsperpage)) {
+    $SESSION->modswitchcast_clipsperpage = 10;
+}
+$length         = optional_param('length', $SESSION->modswitchcast_clipsperpage, PARAM_INT);
+$SESSION->modswitchcast_clipsperpage = $length;
 
 if (! $cm = get_coursemodule_from_id('switchcast', $id)) {
     print_error('invalidcoursemodule');
@@ -91,7 +101,7 @@ if (scast_obj::getValueByKey('display_select_columns')) {
 
 $clip_objs = array();
 foreach ($clips as $clip) {
-    $scast_clip = new scast_clip($sc_obj, $clip['ext_id']);
+    $scast_clip = new scast_clip($sc_obj, $clip['ext_id'], false, $switchcast->id);
     $title = $scast_clip->getTitle();
     if ($title == '') {
         $scast_clip->setTitle(get_string('untitled_clip', 'switchcast'));
@@ -140,7 +150,7 @@ foreach ($clips as $clip) {
 if (scast_obj::getValueByKey('display_select_columns')) {
     $all_clip_objs = array();
     foreach ($all_clips as $clip) {
-        $scast_clip = new scast_clip($sc_obj, $clip['ext_id']);
+        $scast_clip = new scast_clip($sc_obj, $clip['ext_id'], false, $switchcast->id);
         $scast_clip->setowner_page = '#switchcast-inactive';
         $scast_clip->deleteclip_page = '#switchcast-inactive';
         $scast_clip->clipmembers_page = '#switchcast-inactive';

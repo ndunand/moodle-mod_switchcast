@@ -42,6 +42,10 @@ if (isset($_REQUEST['enc_token'])) {
 	$clip_id        = $dec_token_arr['clip_id'];
 	$plain_token    = $dec_token_arr['plain_token'];
 
+    if (!isset($SESSION->switchcastid)) {
+        print_error('moodleaccessonly', 'switchcast');
+    }
+    
     if (! $switchcast = $DB->get_record('switchcast', array('ext_id' => $channel_id, 'id' => $SESSION->switchcastid))) {
         print_error('invalidcoursemodule');
     }

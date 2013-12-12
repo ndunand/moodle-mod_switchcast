@@ -34,7 +34,8 @@
             'tr.switchcast-clip-template-row': {
                 'entry<-entries': {
                     'img@src' : 'entry.cover',
-                    'h3' : 'entry.title',
+                    'span.title' : 'entry.title',
+                    'div.subtitle' : 'entry.subtitle',
                     'a.annotate@href' : 'entry.AnnotationLink',
                     'a.flash@href' : 'entry.linkflash',
                     'a.mov@href' : 'entry.linkmov',
@@ -88,6 +89,12 @@
 
 
             $.getJSON(json_url, function(data){
+                if (typeof data.error !== 'undefined') {
+                    if(confirm(data.error)) {
+                        document.location.reload();
+                    }
+                    return;
+                }
                 var items = {
                     entries: data.clips
                 };

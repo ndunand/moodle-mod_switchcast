@@ -127,8 +127,8 @@ class mod_switchcast_mod_form extends moodleform_mod {
         }
         else {
             if ($sysaccount !== false) {
-                // We've got a sys_account for this instance's organization -> use it to get the channels list
-                $userchannels = $sysaccount->getChannels();
+                // We've got a sys_account for this instance's organization -> get the user's channels list
+                $userchannels = $scuser->getChannels();
             }
             else {
                 // No sys_account for this instance's organization -> no channels list can be displayed
@@ -148,7 +148,7 @@ class mod_switchcast_mod_form extends moodleform_mod {
         $mform->setType('newchannelname', PARAM_TEXT);
 
         if (!empty($this->_instance)) {
-            $mform->freeze('channelnew,channeltype');
+            $mform->freeze('channelnew');
             $mform->removeElement('newchannelname');
         }
 

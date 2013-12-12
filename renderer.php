@@ -128,7 +128,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
      *
      */
     function display_channel_outline() {
-        global $CFG, $OUTPUT, $switchcast, $cm, $context;
+        global $CFG, $OUTPUT, $switchcast, $cm, $context, $SESSION;
 
         if ($this->scobj->isProducer($this->scuser->getExternalAccount())) {
             echo html_writer::tag('a', get_string('upload_clip', 'switchcast'), array('href' => $this->scobj->getUploadForm(), 'class' => 'upload button', 'target' => '_blank'));
@@ -150,9 +150,10 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         echo html_writer::tag('input', '', array('type' => 'hidden', 'id' => 'switchcast-cmid-hidden-input', 'value' => $cm->id));
         echo html_writer::start_tag('div', array('class' => 'ajax-controls-perpage'));
         echo html_writer::tag('span', get_string('itemsperpage', 'switchcast'));
-        $perpage_vaues = array(5, 10, 20, 50, 100);
-        $perpage_options = array_combine($perpage_vaues, $perpage_vaues);
-        echo html_writer::select($perpage_options, 'switchcast-perpage', '10');
+        $perpage_values = array(5, 10, 20, 50, 100);
+        $perpage_options = array_combine($perpage_values, $perpage_values);
+        $perpage_option_selected = isset($SESSION->modswitchcast_clipsperpage) ? ($SESSION->modswitchcast_clipsperpage) : (10);
+        echo html_writer::select($perpage_options, 'switchcast-perpage', $perpage_option_selected);
         echo html_writer::end_tag('div');
         echo html_writer::start_tag('div', array('class' => 'ajax-controls-pageno'));
         echo html_writer::tag('span', get_string('pageno', 'switchcast'));
@@ -174,7 +175,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         echo html_writer::tag('span', get_string('presenter', 'switchcast'));
         echo html_writer::empty_tag('input', array('type' => 'text', 'name' => 'switchcast-presenter'));
         echo html_writer::end_tag('div');
-        echo html_writer::start_tag('div', array('class' => 'ajax-controls-location'));
+        echo html_writer::start_tag('div', array('class' => 'ajax-controls-location switchcast-locatio switchcast-location'));
         echo html_writer::tag('span', get_string('location', 'switchcast'));
         echo html_writer::empty_tag('input', array('type' => 'text', 'name' => 'switchcast-location'));
         echo html_writer::end_tag('div');
@@ -201,6 +202,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         echo html_writer::start_tag('div');
         echo html_writer::tag('span', '&nbsp;');
         echo html_writer::tag('button', get_string('resetfilters', 'switchcast'), array('class' => 'cancel'));
+        echo html_writer::tag('span', '&nbsp;');
         echo html_writer::tag('button', get_string('ok'), array('class' => 'ok'));
         echo html_writer::end_tag('div');
 
@@ -243,6 +245,9 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         if ($title == '') {
             $title = get_string('untitled_clip', 'switchcast');
         }
+        $subtitle = $sc_clip->getSubtitle();
+        $title  = html_writer::tag('span', $title, array('class' => 'title'));
+        $title .= html_writer::tag('div', $subtitle, array('class' => 'subtitle'));
         $owner = $sc_clip->getOwner();
         if ($owner == '') {
             $owner = get_string('no_owner', 'switchcast');
