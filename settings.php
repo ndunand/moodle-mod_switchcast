@@ -30,6 +30,8 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
+    include_once($CFG->dirroot.'/mod/switchcast/scast_obj.class.php');
+
     $settings->add(new admin_setting_configtext('switchcast/switch_api_host',
             get_string('switch_api_host', 'switchcast'),
             get_string('switch_api_host_desc', 'switchcast'),

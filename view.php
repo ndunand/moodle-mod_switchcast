@@ -61,7 +61,7 @@ if (! $switchcast = switchcast_get_switchcast($cm->instance)) {
     print_error('invalidcoursemodule', null, $return_course);
 }
 
-if (! $context = get_context_instance(CONTEXT_MODULE, $cm->id)) {
+if (! $context = context_module::instance($cm->id)) {
     print_error('badcontext', null, $return_course);
 }
 

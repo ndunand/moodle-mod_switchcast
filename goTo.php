@@ -41,4 +41,4 @@ if ($tk == sha1( scast_obj::getValueByKey('default_sysaccount') . $swid . $url )
     exit;
 }
 
-print_error('xxx');
+print_error('redirfailed', 'switchcast');

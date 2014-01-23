@@ -121,6 +121,9 @@ class scast_xml {
 		}
 
 		if ($output === false) {
+            if ($curl_errno) {
+                scast_log::write("CURL REQUEST ERROR : no. ".$curl_errno);
+            }
 			print_error('switch_api_down', 'switchcast');
 			return false;
 		}
@@ -141,15 +144,17 @@ class scast_xml {
                 $sxe .= "\n\n";
                 $sxe .= $output;
                 echo $sxe;
-                error_log($sxe, 3, $CFG->dataroot.'/mod/switchcast/error.log');
-                die();
             }
             print_error('xml_fail', 'switchcast', null, $e->getMessage() . $e->getCode());
 			return false;
 		}
 
-        //Falls das Return-Objekt eine Mesage enthält so, ist etwas schief gelaufen.
+        // Falls das Return-Objekt eine Mesage enthält so, ist etwas schief gelaufen.
 		if ($return->message && strpos($return->message, 'success') === false) {
+            if (isset($return->code)) {
+                print_error((string)$return->code, 'switchcast');
+                return false;
+            }
             print_error('xml_fail', 'switchcast', null, (string)$return->message);
 			return false;
 		}
@@ -166,7 +171,7 @@ class scast_xml {
 			$xObj = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><" . $a_base . " />");
 			foreach ($a_data as $key => $value) {
 				if (is_string($value)) {
-					$value = htmlentities($value);
+					$value = htmlspecialchars($value, ENT_XML1, 'UTF-8');
 				}
 
 				$xObj->addChild($key, $value);

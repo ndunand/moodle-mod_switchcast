@@ -45,7 +45,7 @@ if (isset($_REQUEST['enc_token'])) {
     if (!isset($SESSION->switchcastid)) {
         print_error('moodleaccessonly', 'switchcast');
     }
-    
+
     if (! $switchcast = $DB->get_record('switchcast', array('ext_id' => $channel_id, 'id' => $SESSION->switchcastid))) {
         print_error('invalidcoursemodule');
     }
@@ -64,7 +64,7 @@ if (isset($_REQUEST['enc_token'])) {
         print_error('invalidcoursemodule', null, $return_course);
     }
 
-    if (! $context = get_context_instance(CONTEXT_MODULE, $cm->id)) {
+    if (! $context = context_module::instance($cm->id)) {
         print_error('badcontext', null, $return_course);
     }
 

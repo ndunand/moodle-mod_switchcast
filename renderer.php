@@ -111,7 +111,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
                 $this->display_clip_outline($sc_clip, true, true);
                 break;
                 // NOTE ND : we display only one row, that we'll use as a template
-                // TODO : it's ugly, I have to code this in a better way
+                // TODO : it's ugly, there must be a better way
             }
             echo html_writer::end_tag('table');
             echo html_writer::tag('div', '', array('class' => 'loading'));
@@ -248,6 +248,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         $subtitle = $sc_clip->getSubtitle();
         $title  = html_writer::tag('span', $title, array('class' => 'title'));
         $title .= html_writer::tag('div', $subtitle, array('class' => 'subtitle'));
+
         $owner = $sc_clip->getOwner();
         if ($owner == '') {
             $owner = get_string('no_owner', 'switchcast');
@@ -503,33 +504,30 @@ class mod_switchcast_renderer extends plugin_renderer_base {
             $options[$possible_user_id] = $option_text;
         }
         if (count($options)) {
-            echo html_writer::start_tag('form', array('method' => 'post', 'action' => $action_url, 'onsubmit' => 'return document.getElementById(\'menuuserid\').selectedIndex != 0;'));
-            echo html_writer::input_hidden_params($url, array('action', 'userid'));
-            echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()));
-            echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'action', 'value' => 'add'));
-            echo html_writer::select($options, 'userid');
-            echo html_writer::empty_tag('input', array('type' => 'submit', 'value' => $buttonlabel));
-            echo html_writer::end_tag('form');
+            if (!$selectonly) {
+                echo html_writer::start_tag('form', array('method' => 'post', 'action' => $action_url, 'onsubmit' => 'return document.getElementById(\'menuuserid\').selectedIndex != 0;'));
+                echo html_writer::input_hidden_params($url, array('action', 'userid'));
+                echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()));
+                echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'action', 'value' => 'add'));
+            }
+            echo html_writer::select($options, 'userid', $selected_id);
+            if (!$selectonly) {
+                echo html_writer::empty_tag('input', array('type' => 'submit', 'value' => $buttonlabel));
+                echo html_writer::end_tag('form');
+            }
         }
         else {
-            echo html_writer::start_tag('form');
+            if (!$selectonly) {
+                echo html_writer::start_tag('form');
+            }
             echo html_writer::select($options, 'userid', null, null, array('disabled' => 'disabled'));
-            echo html_writer::empty_tag('input', array('type' => 'submit', 'value' => $buttonlabel, 'disabled' => 'disabled'));
-            echo html_writer::tag('div', get_string('nomoreusers', 'switchcast'));
-            echo html_writer::end_tag('form');
+            if (!$selectonly) {
+                echo html_writer::empty_tag('input', array('type' => 'submit', 'value' => $buttonlabel, 'disabled' => 'disabled'));
+                echo html_writer::tag('div', get_string('nomoreusers', 'switchcast'));
+                echo html_writer::end_tag('form');
+            }
         }
     }
-
-
-// TODO ND : remove, eventually
-//    /**
-//     * Displays an iframe containing the SWITCHcast clip upload form
-//     *
-//     */
-//    function display_upload_form() {
-//        echo html_writer::tag('iframe', '', array('src' => $this->scobj->getUploadForm(), 'width' => '600', 'height' => '660', 'border' => '0'));
-//
-//    }
 
 
 }

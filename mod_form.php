@@ -33,7 +33,7 @@ class mod_switchcast_mod_form extends moodleform_mod {
 
     function definition() {
         global $CFG, $PAGE;
-        
+
         $mform    =& $this->_form;
 
         // some checks, before going any further
@@ -58,7 +58,7 @@ class mod_switchcast_mod_form extends moodleform_mod {
             // $USER has a SWITCHaai account, so register him at SwitchCast to make sure it exists there
             scast_obj::registerUser($scuser);
         }
-        
+
         // have we got a sys_account for the channel?
         $sysaccount = false;
         if ( !empty($this->_instance) && in_array($this->current->organization_domain, scast_obj::getEnabledOrgnanizations()) ) {
@@ -225,7 +225,7 @@ class mod_switchcast_mod_form extends moodleform_mod {
                 $mform->addElement('html', get_string('channeldoesnotbelong', 'switchcast', $this->current->organization_domain));
             }
         }
-      
+
         // What if the channel does not exist any more?
         if (  !empty($this->_instance) && scast_obj::getOrganizationByEmail($scuser->getExternalAccount()) == $this->current->organization_domain && !isset($channels[$this->current->ext_id]) ) {
             $mform->removeElement('inviting');
@@ -240,7 +240,7 @@ class mod_switchcast_mod_form extends moodleform_mod {
             $mform->removeElement('ext_id');
             $mform->removeElement('channeltype');
             $mform->removeElement('channelnew');
-            $mform->addElement('html', get_string('channeldoesntexist', 'switchcast'));
+            $mform->addElement('html', get_string('channel_not_found', 'switchcast'));
         }
 
         $this->standard_coursemodule_elements();
@@ -283,7 +283,7 @@ class mod_switchcast_mod_form extends moodleform_mod {
             $channelid = (empty($this->_instance)) ? ($ext_id) : ($this->current->id);
             // if there already is one instance we must refer to it by its Moodle ID otherwise there could
             // be several records!
-            $thechannel = $scobj->doRead($channelid, !empty($this->_instance));
+            $thechannel = $scobj->doRead($channelid, !empty($this->_instance), true);
             if (trim((string)$thechannel->access) == 'external_authority' && (int)$thechannel->external_authority_id != $scobj->getValueByKey('external_authority_id')) {
                 // we can't steal external_authority from another institution
                 $errors['ext_id'] = get_string('channelhasotherextauth', 'switchcast', $scobj->getExternalAuthName($thechannel->external_authority_id));

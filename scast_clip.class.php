@@ -151,7 +151,11 @@ class scast_clip {
 
 
 		$simplexmlobj = simplexml_load_string('<?xml version="1.0" encoding="utf-8"?><clip />');
-		$simplexmlobj->addChild('ivt__owner', htmlentities($this->getOwner()));
+		$simplexmlobj->addChild('title', htmlspecialchars($this->getTitle(), ENT_XML1, 'UTF-8'));
+		$simplexmlobj->addChild('subtitle', htmlspecialchars($this->getSubtitle(), ENT_XML1, 'UTF-8'));
+		$simplexmlobj->addChild('presenter', htmlspecialchars($this->getPresenter(), ENT_XML1, 'UTF-8'));
+		$simplexmlobj->addChild('location', htmlspecialchars($this->getLocation(), ENT_XML1, 'UTF-8'));
+		$simplexmlobj->addChild('ivt__owner', htmlspecialchars($this->getOwner(), ENT_XML1, 'UTF-8'));
 
 		scast_xml::sendRequest($url, 'PUT', $simplexmlobj->asXML()); // TODO mit neuer methode
 		return true;

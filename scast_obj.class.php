@@ -107,8 +107,8 @@ class scast_obj {
         }
 		return preg_replace('/^[^@]+@([^.]+\.)?([^.]+\.ch)$/', '$2', $email);
 	}
-	
-	
+
+
 	/**
 	* @return array
 	*/
@@ -133,6 +133,10 @@ class scast_obj {
 	}
 
 
+    /**
+     *
+     * @return string
+     */
 	public static function getSysAccountOfUser() {
 		$scuser = new scast_user();
 		$organizationDomain = self::getOrganizationByEmail($scuser->getExternalAccount());
@@ -534,7 +538,7 @@ class scast_obj {
      * @param bool $inmoodle
      * @return type
      */
-	function doRead($id, $inmoodle = true) {
+	function doRead($id, $inmoodle = true, $returninfo = false) {
 		global $DB;
 
         if ($inmoodle) {
@@ -568,7 +572,7 @@ class scast_obj {
 
 		$ch = scast_xml::sendRequest($url, 'GET');
 
-        if (!$inmoodle) {
+        if (!$inmoodle || $returninfo) {
             // we just want the channel info
             return $ch;
         }
@@ -596,7 +600,9 @@ class scast_obj {
 
 	/**
 	 * Update data
-	 */
+     *
+     * @return boolean true if success
+     */
 	function doUpdate() {
 		global $USER;
 

@@ -72,7 +72,7 @@ $sc_obj  = new scast_obj();
 $sc_obj->doRead($switchcast->id);
 $sc_clip = new scast_clip($sc_obj, $clip_ext_id, false, $switchcast->id);
 
-if (! $context = get_context_instance(CONTEXT_MODULE, $cm->id)) {
+if (! $context = context_module::instance($cm->id)) {
     print_error('badcontext', null, $return_course);
 }
 
