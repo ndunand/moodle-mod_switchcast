@@ -60,7 +60,17 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('switchcast/allow_test_channels',
             get_string('allow_test_channels', 'switchcast'),
             get_string('allow_test_channels_desc', 'switchcast'),
-            '1'));
+            '0'));
+
+    $settings->add(new admin_setting_configcheckbox('switchcast/allow_userupload',
+            get_string('allow_userupload', 'switchcast'),
+            get_string('allow_userupload_desc', 'switchcast'),
+            '0'));
+
+    $settings->add(new admin_setting_configselect('switchcast/userupload_maxfilesize',
+            get_string('userupload_maxfilesize', 'switchcast'),
+            get_string('userupload_maxfilesize_desc', 'switchcast'),
+            10*1024*1024, scast_obj::getMaxfilesizes()));
 
     $settings->add(new admin_setting_configtext('switchcast/xml_cache_time',
             get_string('xml_cache_time', 'switchcast'),

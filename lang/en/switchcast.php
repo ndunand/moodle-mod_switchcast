@@ -137,6 +137,7 @@ $string['switchcast:use'] = 'Display SWITCHcast channel contents';
 $string['switchcast:isproducer'] = 'Be registered as a SWITCHcast channel producer (and hence access all clips)';
 $string['switchcast:addinstance'] = 'Add a new SWITCHcast channel activity';
 $string['switchcast:seeallclips'] = 'Can see all clips in the course';
+$string['switchcast:uploadclip'] = 'Can add a clip via Moodle';
 $string['nologfilewrite'] = 'Log file not writeable: {$a}. Check file system permissions.';
 $string['noclipsinchannel'] = 'This channel contains no clips.';
 $string['novisibleclipsinchannel'] = 'This channel contains no clips that you have access to.';
@@ -153,7 +154,7 @@ $string['actions'] = 'Actions';
 $string['editmembers'] = 'Invite members';
 $string['addmember'] = 'Add member';
 $string['editmembers_long'] = 'Manage the invited members of this clip';
-$string['setowner'] = 'Set owner';
+$string['editdetails'] = 'Edit metadata';
 $string['delete_clip'] = 'Delete clip';
 $string['flash'] = 'Flash';
 $string['mov'] = 'QuickTime';
@@ -163,7 +164,7 @@ $string['confirm_removeuser'] = 'Really remove this user?';
 $string['delete_clip_confirm'] = 'Do you really want to delete the clip?';
 $string['back_to_channel'] = 'Return to the channel overview';
 $string['channel_several_refs'] = 'This channel is referenced in other Moodle activities.';
-$string['set_clip_owner'] = 'Set clip owner';
+$string['set_clip_details'] = 'Set clip metadata';
 $string['owner_no_switch_account'] = 'Impossible to set &laquo;{$a}&raquo; as the owner of this clip, because this user has no SWITCHaai account.';
 $string['nomoreusers'] = 'No more users available to add.';
 $string['nocontenthours'] = 'Estimated content hours minimal value is 1.';
@@ -171,6 +172,7 @@ $string['nodepartment'] = 'You have to fill in the department.';
 $string['setnewowner'] = 'Set as new owner';
 $string['clip_owner'] = 'Clip owner';
 $string['group_member'] = 'Group member';
+$string['clip_uploader'] = 'Uploaded the clip';
 $string['aaiid_vs_moodleid'] = 'AAI unique ID does not relate to correct Moodle user ID!';
 $string['error_decoding_token'] = 'Error decoding token: {$a}';
 $string['error_opening_privatekey'] = 'Error opening private key file: {$a}';
@@ -184,13 +186,15 @@ $string['pagination'] = 'Displaying clips <span class="switchcast-cliprange-from
 $string['filters'] = 'Filters';
 $string['resetfilters'] = 'Reset filters';
 $string['title'] = 'Title';
+$string['subtitle'] = 'Subtitle';
+$string['showsubtitles'] = 'show subtitles';
 $string['recordingstation'] = 'Recording station';
 $string['withoutowner'] = 'Without owner';
 $string['notavailable'] = 'Sorry, this activity type is for testing only and is not available yet.';
 $string['xml_cache_time'] = 'XML cache lifetime';
 $string['xml_cache_time_desc'] = 'How long, in seconds, should the XML responses from the SwitchCast server be kept in cache? Zero value means no caching.';
 $string['removeowner'] = 'Remove owner';
-$string['channeldoesntexist'] = 'The linked channel does not exist (anymore?)';
+$string['channel_not_found'] = 'The linked channel does not exist (anymore?)';
 $string['channeldoesnotbelong'] = 'The linked channel belongs to another organization ({$a}); therefore, you cannot modify it. Only a teacher from {$a} can modify it.';
 $string['switch_api_down'] = 'The SwitchCast server is not responding.';
 $string['xml_fail'] = 'Error communicating with the SwitchCast server.';
@@ -199,3 +203,42 @@ $string['curl_proxy'] = 'curl proxy';
 $string['curl_proxy_desc'] = 'If curl has to use a proxy, define it here in the form <em>proxyhostname:port</em>';
 $string['moodleaccessonly'] = 'This clip can only be accessed from within a Moodle activity.';
 $string['loggedout'] = 'You have been logged out. Please refresh the page.';
+$string['redirfailed'] = 'Redirection has failed.';
+$string['allow_userupload'] = 'Allow user uploads';
+$string['allow_userupload_desc'] = 'Allow users to upload video clips into a channel via the Moodle activity. The corresponding option has to be activated in the specific activity as well.';
+$string['userupload_maxfilesize'] = 'User maximum file size';
+$string['userupload_maxfilesize_desc'] = 'Maximum size of each file the users can upload.';
+$string['userupload_error'] = 'An unexpected error occurred while uploading the file; please try again.';
+$string['fileis_notavideo'] = 'File is not a video file type! MIME type is: {$a}';
+$string['pendingclips'] = 'There are {$a} clips being processed in this channel';
+$string['mypendingclips'] = 'You have {$a} clips being processed in this channel';
+$string['uploadedclips'] = '{$a} clips have been uploaded to this channel';
+$string['myuploadedclips'] = 'You have uploaded {$a} clips into this channel';
+$string['clipready_subject'] = 'Your new clip is ready';
+$string['clipready_body'] = 'Your uploaded clip "{$a->filename}" is ready, you may find it in the following Moodle activity:
+
+{$a->link}
+';
+$string['clipstale_subject'] = 'Your uploaded clip had a problem';
+$string['clipstale_subject_admin'] = 'An uploaded clip had a problem';
+$string['clipstale_body'] = 'Your uploaded clip "{$a->filename}" failed encoding. You should try uploading it again in the following Moodle activity:
+
+{$a->link}
+';
+$string['clipstale_body_admin'] = 'The uploaded clip "{$a->filename}" failed encoding.
+
+    Moodle activity: {$a->link}
+    Moodle user: {$a->userfullname} {$a->userlink}
+';
+$string['view_useruploads'] = 'Display user uploads';
+$string['uploaded_clips'] = 'Clips uploaded by users';
+$string['nouploadedclips'] = 'No clips uploaded yet.';
+$string['feature_forbidden'] = 'You cannot use this feature';
+$string['video_file'] = 'Add your video file here';
+$string['video_title'] = 'Title of the video clip';
+$string['video_subtitle'] = 'Subtitle of the video clip';
+$string['video_presenter'] = 'Presenter of the video clip';
+$string['video_location'] = 'Filming ocation of the video clip';
+$string['scast_upload_form_hdr'] = 'Upload your video clip here';
+$string['uploader'] = 'Uploaded by';
+

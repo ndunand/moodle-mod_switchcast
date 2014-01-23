@@ -30,6 +30,11 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/mod/switchcast/scast_user.class.php');
 
+define('SWITCHCAST_CLIP_UPLOADED', 1);
+define('SWITCHCAST_CLIP_READY', 2);
+define('SWITCHCAST_CLIP_TRYAGAIN', 3);
+define('SWITCHCAST_STALE_PERIOD', 3600*6);
+
 
 class scast_clip {
 
@@ -199,20 +204,30 @@ class scast_clip {
 	 * @return bool true if permission granted
 	 */
 	public function checkPermissionBool($a_perm) {
-		global $USER, $context;
+		global $DB, $USER, $context;
 
         if (! has_capability('mod/switchcast:use', $context) ) {
             return false;
         }
 
         $scast_user = new scast_user();
+        $user_uploaded_clips = $DB->get_records('switchcast_uploadedclip', array('userid' => $USER->id));
+        $user_uploaded_clips_extids = array();
+        if (is_array($user_uploaded_clips)) {
+            foreach ($user_uploaded_clips as $user_uploaded_clip) {
+                $user_uploaded_clips_extids[] = $user_uploaded_clip->ext_id;
+            }
+        }
 
 		if ($a_perm == 'write') {
             if (    has_capability('mod/switchcast:isproducer', $context)
-                    || ( ( $scast_user->getExternalAccount() == $this->getOwner() ) && $this->getOwner() !== '' ) ) {
+                    || ( ( $scast_user->getExternalAccount() == $this->getOwner() ) && $this->getOwner() !== '' )
+                    || in_array($this->getExtId(), $user_uploaded_clips_extids)
+                ) {
                 /*
                  * the current $USER is channel producer
                  * OR the current $USER is the clip owner
+                 * OR the current $USER is the user who uploaded the clip
                  */
 				return true;
 			}
@@ -225,6 +240,7 @@ class scast_clip {
                     || ( $this->scast_obj->getIvt() == false )
                     || ( $this->scast_obj->getIvt() == true && $this->scast_obj->getInvitingPossible() == true && is_numeric(array_search($USER->id, $this->getMembers())) )
                     || ( scast_user::checkSameGroup(scast_user::getMoodleUserIdFromExtId($this->getOwner()), $USER->id) )
+                    || in_array($this->getExtId(), $user_uploaded_clips_extids)
                 ) {
                 /*
                  * the current $USER is channel producer
@@ -233,6 +249,7 @@ class scast_clip {
                  * OR there are no individual clip permissions set for this activity
                  * OR activity is set in individual mode AND $USER is an invited member of a clip
                  * OR is in the same user group as the clip owner
+                 * OR the current $USER is the user who uploaded the clip
                  */
                 return true;
             }

@@ -31,27 +31,37 @@ function xmldb_switchcast_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
 
-/*
-    if ($oldversion < 2012042500) {
+    if ($oldversion < 2013120100) {
 
-    /// remove the no longer needed switchcast_answers DB table
-        $switchcast_answers = new xmldb_table('switchcast_answers');
-        $dbman->drop_table($switchcast_answers);
+        // Define fields to be added to table switchcast
+        $table = new xmldb_table('switchcast');
+        $field1 = new xmldb_field('userupload', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'inviting');
+        $field2 = new xmldb_field('userupload_maxfilesize', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'userupload');
 
-    /// change the switchcast_options.text (text) field as switchcast_options.groupid (int)
-        $switchcast_options =  new xmldb_table('switchcast_options');
-        $field_text =           new xmldb_field('text', XMLDB_TYPE_TEXT, 'small', null, null, null, null, 'switchcastid');
-        $field_groupid =        new xmldb_field('groupid', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'switchcastid');
+        // Conditionally launch add fields
+        if (!$dbman->field_exists($table, $field1)) {
+            $dbman->add_field($table, $field1);
+        }
+        if (!$dbman->field_exists($table, $field2)) {
+            $dbman->add_field($table, $field2);
+        }
 
-        $dbman->rename_field($switchcast_options, $field_text, 'groupid');
-        $dbman->change_field_type($switchcast_options, $field_groupid);
-
-    /// switchcast savepoint reached
-        upgrade_mod_savepoint(true, 2012042500, 'switchcast');
+        // Switchcast savepoint reached.
+        upgrade_mod_savepoint(true, 2013120100, 'switchcast');
     }
-*/
+
+    if ($oldversion < 2013121600) {
+
+        $table2 = new xmldb_table('switchcast_uploadedclip');
+
+        if (!$dbman->table_exists($table2)) {
+            $dbman->install_one_table_from_xmldb_file($CFG->dirroot.'/mod/switchcast/db/install.xml', 'switchcast_uploadedclip');
+        }
+
+        // Switchcast savepoint reached.
+        upgrade_mod_savepoint(true, 2013121600, 'switchcast');
+    }
 
     return true;
 }
-
 

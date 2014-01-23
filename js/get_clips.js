@@ -45,7 +45,7 @@
                     'td.switchcast-recordingstation' : 'entry.recordingstation',
                     'td.switchcast-recordingdate' : 'entry.recordingdate',
                     'td.switchcast-owner' : 'entry.owner_name',
-                    'a.switchcast-setowner@href' : 'entry.setowner_page',
+                    'a.switchcast-editdetails@href' : 'entry.editdetails_page',
 //                    'a.switchcast-editclip@href' : 'entry.editclip_page',
 // (we don't display this link anymore)
                     'a.switchcast-deleteclip@href' : 'entry.deleteclip_page',
@@ -80,7 +80,7 @@
                                     + '&filterstr=' + filterstr;
 
             if ($('.switchcast-sortable a.sort').length > 0) {
-                sortkey = $('.switchcast-sortable a.sort').parent().attr('title'),
+                sortkey = $('.switchcast-sortable a.sort').parent().attr('data-sortkey'),
                 sortdir = $('.switchcast-sortable a.sort').attr('class').replace(/^sort /, '');
                 json_url = json_url
                                     + '&sortkey=' + sortkey
@@ -102,6 +102,7 @@
                     show_owner = false,
                     show_actions = false,
                     show_location = false,
+                    show_presenter = false,
                     theclip;
                 if (typeof data.allclips != 'undefined') {
                     // let's figure which columns to display
@@ -116,7 +117,10 @@
                         if (theclip.location.length) {
                             show_location = true;
                         }
-                        if (theclip.clipmembers_page != '#switchcast-inactive' || theclip.deleteclip_page != '#switchcast-inactive' || theclip.setowner_page != '#switchcast-inactive') {
+                        if (theclip.presenter.length) {
+                            show_presenter = true;
+                        }
+                        if (theclip.clipmembers_page != '#switchcast-inactive' || theclip.deleteclip_page != '#switchcast-inactive' || theclip.editdetails_page != '#switchcast-inactive') {
                             show_actions = true;
                         }
                     }
@@ -129,12 +133,13 @@
                     show_recordingstation = true;
                     show_actions = true;
                     show_location = true;
+                    show_presenter = true;
                 }
 //                console.log(data.clips);
                 var nbpages = 1;
                 the_table.html(tfn(items)); // cf. https://groups.google.com/forum/?fromgroups=#!topic/Pure-Unobtrusive-Rendering-Engine/78jEgjCd57c
                 if (sortkey !== '' && sortdir !== '') {
-                    $('.switchcast-clips-table th[title='+sortkey+']').find('a').attr('class', 'sort '+sortdir);
+                    $('.switchcast-clips-table th[data-sortkey='+sortkey+']').find('a').attr('class', 'sort '+sortdir);
                 }
                 $('a[href=#switchcast-inactive], a:not([href])').remove();
 
@@ -151,6 +156,13 @@
                 }
                 else {
                     $('.switchcast-location').show();
+                }
+
+                if (!show_presenter) {
+                    $('.switchcast-presenter').hide();
+                }
+                else {
+                    $('.switchcast-presenter').show();
                 }
 
                 if (!show_owner) {
@@ -191,6 +203,12 @@
                     $('#menuswitchcast-pageno').append($('<option value="'+i+'">'+i+'</option>'));
                 }
                 $('#menuswitchcast-pageno').val(offset/length + 1);
+
+                // put checkbox back in previous position
+                if (modswitchcast_tbldsplaypar.showsubtitles === true) {
+                    $('#clip-show-subtitle').click();
+                }
+
             });
 
         };

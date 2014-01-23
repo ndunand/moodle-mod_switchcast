@@ -20,7 +20,7 @@
  * @package    mod
  * @subpackage switchcast
  * @copyright  2013 Université de Lausanne
- * @author     Nicolas.Dunand@unil.ch
+ * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,16 +29,10 @@ require_once($CFG->dirroot.'/mod/switchcast/lib.php');
 require_once($CFG->dirroot.'/mod/switchcast/scast_obj.class.php');
 require_once($CFG->dirroot.'/mod/switchcast/scast_clip.class.php');
 
-$id             = required_param('id', PARAM_INT);                 // Course Module ID
-$clip_ext_id    = required_param('clip_ext_id', PARAM_ALPHANUM);   // Clip ext_id
-$confirm        = optional_param('confirm', 0, PARAM_INT);
+$id = required_param('id', PARAM_INT); // Course Module ID
 
-$url = new moodle_url('/mod/switchcast/clip_delete.php', array('id' => $id, 'clip_ext_id' => $clip_ext_id));
+$url = new moodle_url('/mod/switchcast/uploads.php', array('id' => $id));
 $return_channel = new moodle_url('/mod/switchcast/view.php', array('id' => $id));
-
-if ($confirm !== 0) {
-    $url->param('confirm', $confirm);
-}
 
 $PAGE->set_url($url);
 
@@ -50,14 +44,16 @@ if (! $course = $DB->get_record('course', array('id' => $cm->course))) {
     print_error('coursemisconf');
 }
 
+$return_course = new moodle_url('/course/view.php', array('id' => $course->id));
+
 require_course_login($course, false, $cm);
 
 if (!$switchcast = switchcast_get_switchcast($cm->instance)) {
-    print_error('invalidcoursemodule');
+    print_error('invalidcoursemodule', null, $return_course);
 }
 
 if (! $context = context_module::instance($cm->id)) {
-    print_error('badcontext');
+    print_error('badcontext', null, $return_course);
 }
 
 if (!has_capability('mod/switchcast:isproducer', $context)) {
@@ -66,26 +62,6 @@ if (!has_capability('mod/switchcast:isproducer', $context)) {
 
 $sc_obj  = new scast_obj();
 $sc_obj->doRead($switchcast->id);
-$sc_clip = new scast_clip($sc_obj, $clip_ext_id);
-
-
-// Perform action ?
-if (    $confirm === 1
-        && confirm_sesskey()
-        && has_capability('mod/switchcast:isproducer', $context)
-    ) {
-    /*
-     * $confirm
-     * AND sesskey() ok
-     * AND $USER has producer rights
-     */
-    $sc_clip->doDelete();
-
-    add_to_log($course->id, 'switchcast', 'delete clip', 'clip_delete.php?id='.$id.'&clip_id='.$clip_ext_id, $sc_clip->getTitle());
-
-    redirect($return_channel);
-
-}
 
 
 // Display
@@ -94,17 +70,9 @@ $PAGE->set_title(format_string($switchcast->name));
 $PAGE->set_heading($course->fullname);
 
 echo $OUTPUT->header();
-
 $renderer = $PAGE->get_renderer('mod_switchcast');
-
-echo html_writer::tag('h2', get_string('delete_clip', 'switchcast'));
-echo html_writer::start_tag('table', array('class' => 'switchcast-clips'));
-$renderer->display_singleclip_table_header();
-$renderer->display_clip_outline($sc_clip, false);
-echo html_writer::end_tag('table');
-
-$delete_url = new moodle_url('/mod/switchcast/clip_delete.php', array('sesskey' => sesskey(), 'confirm' => 1, 'id' => $id, 'clip_ext_id' => $clip_ext_id));
-$button = new single_button($delete_url, get_string('delete_clip','switchcast'), 'post');
-echo $OUTPUT->confirm(get_string('delete_clip_confirm', 'switchcast'), $button, $return_channel);
+echo html_writer::tag('h2', get_string('uploaded_clips', 'switchcast'));
+$renderer->display_user_pending_clips(true, true, true, true);
+echo html_writer::link($return_channel, get_string('back_to_channel','switchcast'));
 echo $OUTPUT->footer();
 

@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+var modswitchcast_tbldsplaypar = {};
 
 (function($){
 
@@ -35,15 +36,17 @@
             return false;
         });
 
-        // create clip table sort links
-        $('.switchcast-sortable').each(function(){
-            var text  = $(this).text(),
-                ahref = $('<a>');
-
-            ahref.text(text);
-            ahref.attr('href', '#nothing');
-
-            $(this).html('').append(ahref);
+        // show subtitles checkbox
+        $('div#region-main').on('change', '#clip-show-subtitle', function(){
+            var $subtitles = $('table.switchcast-clips div.cliplabel h3 div.subtitle'),
+                table_params = $.toJSON;
+            if ($(this).prop('checked')) {
+                $subtitles.show();
+            }
+            else {
+                $subtitles.hide();
+            }
+            modswitchcast_tbldsplaypar.showsubtitles = $(this).prop('checked');
         });
 
         // deferred event listener for sort links

@@ -135,7 +135,6 @@ echo html_writer::end_tag('table');
 $renderer->display_clip_members();
 $renderer->display_user_selector(false, 'clip_members.php', get_string('addmember', 'switchcast'));
 
-$url = new moodle_url('/mod/switchcast/view.php', array('id' => $id));
-echo html_writer::link($url, get_string('back_to_channel','switchcast'));
+echo html_writer::link($return_channel, get_string('back_to_channel','switchcast'));
 
 echo $OUTPUT->footer();

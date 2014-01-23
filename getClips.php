@@ -106,15 +106,13 @@ foreach ($clips as $clip) {
     if ($title == '') {
         $scast_clip->setTitle(get_string('untitled_clip', 'switchcast'));
     }
-    $scast_clip->setowner_page = '#switchcast-inactive';
+    $scast_clip->editdetails_page = '#switchcast-inactive';
 //    $scast_clip->editclip_page = '#switchcast-inactive';
     $scast_clip->deleteclip_page = '#switchcast-inactive';
     $scast_clip->clipmembers_page = '#switchcast-inactive';
     if (has_capability('mod/switchcast:isproducer', $context)) {
         // current USER is channel producer in Moodle (i.e. Teacher)
-        if ($sc_obj->getIvt()) {
-            $scast_clip->setowner_page = $CFG->wwwroot.'/mod/switchcast/clip_setowner.php?id='.$cm->id.'&clip_ext_id='.$scast_clip->getExtId();
-        }
+        $scast_clip->editdetails_page = $CFG->wwwroot.'/mod/switchcast/clip_editdetails.php?id='.$cm->id.'&clip_ext_id='.$scast_clip->getExtId();
         if ($sc_obj->isProducer($sc_user->getExternalAccount())) {
             // current user is actual SwitchCast producer
             $scast_clip->deleteclip_page = $CFG->wwwroot.'/mod/switchcast/clip_delete.php?id='.$cm->id.'&clip_ext_id='.$scast_clip->getExtId();
@@ -151,13 +149,13 @@ if (scast_obj::getValueByKey('display_select_columns')) {
     $all_clip_objs = array();
     foreach ($all_clips as $clip) {
         $scast_clip = new scast_clip($sc_obj, $clip['ext_id'], false, $switchcast->id);
-        $scast_clip->setowner_page = '#switchcast-inactive';
+        $scast_clip->editdetails_page = '#switchcast-inactive';
         $scast_clip->deleteclip_page = '#switchcast-inactive';
         $scast_clip->clipmembers_page = '#switchcast-inactive';
         if (has_capability('mod/switchcast:isproducer', $context)) {
             // current USER is channel producer in Moodle (i.e. Teacher)
             if ($sc_obj->getIvt()) {
-                $scast_clip->setowner_page = '#some-page';
+                $scast_clip->editdetails_page = '#some-page';
             }
             if ($sc_obj->isProducer($sc_user->getExternalAccount())) {
                 // current user is actual SwitchCast producer

@@ -201,6 +201,12 @@ class mod_switchcast_mod_form extends moodleform_mod {
         $mform->addElement('select', 'inviting', get_string('inviting', 'switchcast'), $yesno);
         $mform->disabledIf('inviting', 'is_ivt', 'eq', 0);
 
+        if (scast_obj::getValueByKey('allow_userupload') && scast_obj::getValueByKey('userupload_maxfilesize')) {
+            $mform->addElement('select', 'userupload', get_string('allow_userupload', 'switchcast'), $yesno);
+            $mform->addElement('select', 'userupload_maxfilesize', get_string('userupload_maxfilesize', 'switchcast'), scast_obj::getMaxfilesizes(true));
+            $mform->disabledIf('userupload_maxfilesize', 'userupload', 'eq', 0);
+        }
+
         if ( !empty($this->_instance) && scast_obj::getOrganizationByEmail($scuser->getExternalAccount()) !== $this->current->organization_domain ) {
             // teacher has no SwitchAAI account OR is from a different HomeOrg than the Channel Producer(s),
             // so check whether we have sys_account for him to see if we can manipulate the channel

@@ -42,10 +42,11 @@ class scast_xml {
      * @param string $a_request request type
      * @param SimpleXMLElement $a_xml input XML
      * @param boolean $as_xml return raw XML?
-     * @param boolean $nocache bypass cache?
+     * @param boolean $usecache try to use cache?
+     * @param string $a_file video file to upload
      * @return boolean|\SimpleXMLElement result or false if error
      */
-	static function sendRequest($a_url, $a_request, $a_xml = NULL, $as_xml = false, $usecache = true) {
+	static function sendRequest($a_url, $a_request, $a_xml = NULL, $as_xml = false, $usecache = true, $a_file = NULL) {
 
         global $CFG;
 
@@ -83,9 +84,20 @@ class scast_xml {
         else {
             // no cache for this request
             scast_log::write("CACHE : no cached file");
-            //error_reporting(0);
+
             libxml_use_internal_errors(true);
+
             $ch = curl_init();
+
+            if (isset($a_file)) {
+                $fh = fopen($a_file, "rb");
+                curl_setopt($ch, CURLOPT_PUT, true); // must be set, elsewise the multipart info will also be sent
+                curl_setopt($ch, CURLOPT_INFILE, $fh);
+                curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_VERBOSE, (bool)scast_obj::getValueByKey('logging_enabled'));
+            }
+
             curl_setopt($ch, CURLOPT_CAINFO, scast_obj::getValueByKey('cacrt_file'));
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_SSLCERT, scast_obj::getValueByKey('crt_file'));
@@ -104,6 +116,18 @@ class scast_xml {
             curl_setopt($ch, CURLOPT_TIMEOUT_MS, 10000);
 
             $output = curl_exec($ch);
+            $curl_errno = curl_errno($ch); // 0 if fine
+
+            if (isset($a_file)) {
+                scast_log::write("CURL UPLOAD ERROR : no. ".$curl_errno);
+                fclose($fh);
+                curl_close($ch);
+                if ($curl_errno) {
+                    throw new moodle_exception('uploaderror', 'switchcast');
+                }
+                return basename($a_file);
+            }
+
             curl_close($ch);
 
             if ((string)$a_request === 'GET' && $cache_time && $cache_dir && is_writable($cache_dir)) {

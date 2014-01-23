@@ -86,6 +86,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
             }
         }
 
+        $this->display_user_pending_clips(false, true);
         $this->display_channel_outline();
 
         $nonverified_clips = $this->scobj->getClips();
@@ -96,14 +97,19 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         $this->clips = $this->scobj->checkAccess($nonverified_clips);
 
         if (count($this->clips)) {
+            echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'table-params'));
             echo html_writer::start_tag('table', array('class' => 'switchcast-clips-table switchcast-clips', 'id' => 'switchcast-clips-table'));
             echo html_writer::start_tag('tr');
-            echo html_writer::tag('th', get_string('cliptitle', 'switchcast'), array('class' => 'switchcast-sortable', 'title' => 'title'));
-            echo html_writer::tag('th', get_string('presenter', 'switchcast'), array('class' => 'switchcast-sortable', 'title' => 'presenter'));
-            echo html_writer::tag('th', get_string('location', 'switchcast'), array('class' => 'switchcast-location switchcast-sortable', 'title' => 'location'));
-            echo html_writer::tag('th', get_string('recording_station', 'switchcast'), array('class' => 'switchcast-recordingstation switchcast-sortable', 'title' => 'recordingstation'));
+            $title_th = html_writer::tag('a', get_string('cliptitle', 'switchcast'), array('href' => '#'));
+            $title_th .= html_writer::empty_tag('br');
+            $title_th .= html_writer::empty_tag('input', array('type' => 'checkbox', 'id' => 'clip-show-subtitle'));
+            $title_th .= html_writer::tag('label', get_string('showsubtitles', 'switchcast'), array('for' => 'clip-show-subtitle'));
+            echo html_writer::tag('th', $title_th, array('class' => 'switchcast-sortable', 'data-sortkey' => 'title'));
+            echo html_writer::tag('th', html_writer::tag('a', get_string('presenter', 'switchcast'), array('href' => '#')), array('class' => 'switchcast-presenter switchcast-sortable', 'data-sortkey' => 'presenter'));
+            echo html_writer::tag('th', html_writer::tag('a', get_string('location', 'switchcast'), array('href' => '#')), array('class' => 'switchcast-location switchcast-sortable', 'data-sortkey' => 'location'));
+            echo html_writer::tag('th', html_writer::tag('a', get_string('recordingstation', 'switchcast'), array('href' => '#')), array('class' => 'switchcast-recordingstation switchcast-sortable', 'data-sortkey' => 'recordingstation'));
             echo html_writer::tag('th', get_string('date', 'switchcast'));
-            echo html_writer::tag('th', get_string('owner', 'switchcast'), array('class' => 'switchcast-owner switchcast-sortable', 'title' => 'owner_name'));
+            echo html_writer::tag('th', html_writer::tag('a', get_string('owner', 'switchcast'), array('href' => '#')), array('class' => 'switchcast-owner switchcast-sortable', 'data-sortkey' => 'owner_name'));
             echo html_writer::tag('th', get_string('actions', 'switchcast'), array('class' => 'switchcast-actions'));
             echo html_writer::end_tag('tr');
             foreach($this->clips as $clip) {
@@ -130,8 +136,14 @@ class mod_switchcast_renderer extends plugin_renderer_base {
     function display_channel_outline() {
         global $CFG, $OUTPUT, $switchcast, $cm, $context, $SESSION;
 
+        if (has_capability('mod/switchcast:isproducer', $context) || ($switchcast->userupload && has_capability('mod/switchcast:uploadclip', $context))) {
+            echo html_writer::tag('a', get_string('upload_clip', 'switchcast'), array('href' => $CFG->wwwroot.'/mod/switchcast/upload_clip.php?id='.$cm->id, 'class' => 'upload button'));
+        }
+        if (has_capability('mod/switchcast:isproducer', $context)) {
+            echo html_writer::tag('a', get_string('view_useruploads', 'switchcast'), array('href' => $CFG->wwwroot.'/mod/switchcast/uploads.php?id='.$cm->id, 'class' => 'upload button'));
+        }
         if ($this->scobj->isProducer($this->scuser->getExternalAccount())) {
-            echo html_writer::tag('a', get_string('upload_clip', 'switchcast'), array('href' => $this->scobj->getUploadForm(), 'class' => 'upload button', 'target' => '_blank'));
+//            echo html_writer::tag('a', get_string('upload_clip', 'switchcast'), array('href' => $this->scobj->getUploadForm(), 'class' => 'upload button', 'target' => '_blank'));
             echo html_writer::tag('a', get_string('edit_at_switch', 'switchcast'), array('href' => $this->scobj->getEditLink(), 'class' => 'editchannel button', 'target' => '_blank'));
             if ($this->scobj->hasReferencedChannels() > 1) {
                 echo html_writer::tag('div', get_string('channel_several_refs', 'switchcast'), array('class' => 'switchcast-notice'));
@@ -175,7 +187,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         echo html_writer::tag('span', get_string('presenter', 'switchcast'));
         echo html_writer::empty_tag('input', array('type' => 'text', 'name' => 'switchcast-presenter'));
         echo html_writer::end_tag('div');
-        echo html_writer::start_tag('div', array('class' => 'ajax-controls-location switchcast-locatio switchcast-location'));
+        echo html_writer::start_tag('div', array('class' => 'ajax-controls-location switchcast-location'));
         echo html_writer::tag('span', get_string('location', 'switchcast'));
         echo html_writer::empty_tag('input', array('type' => 'text', 'name' => 'switchcast-location'));
         echo html_writer::end_tag('div');
@@ -215,17 +227,32 @@ class mod_switchcast_renderer extends plugin_renderer_base {
 
     /**
      * Displays a header for singleclip display
+     *
+     * @param bool $withactions show actions column
+     * @param bool $with_owner
+     * @param bool $with_uploader
+     * @param bool $with_recordingstation
      */
-    function display_singleclip_table_header() {
+    function display_singleclip_table_header($withactions = false, $with_owner = true, $with_uploader = false, $with_recordingstation = true) {
 
         echo html_writer::start_tag('tr');
 
         echo html_writer::tag('th', get_string('cliptitle', 'switchcast'));
         echo html_writer::tag('th', get_string('presenter', 'switchcast'), array('class' => 'switchcast-presenter'));
         echo html_writer::tag('th', get_string('location', 'switchcast'), array('class' => 'switchcast-location'));
-        echo html_writer::tag('th', get_string('recording_station', 'switchcast'), array('class' => 'switchcast-recordingstation'));
+        if ($with_recordingstation) {
+            echo html_writer::tag('th', get_string('recording_station', 'switchcast'), array('class' => 'switchcast-recordingstation'));
+        }
         echo html_writer::tag('th', get_string('date', 'switchcast'), array('class' => 'switchcast-recordingdate'));
-        echo html_writer::tag('th', get_string('owner', 'switchcast'), array('class' => 'switchcast-owner'));
+        if ($with_owner) {
+            echo html_writer::tag('th', get_string('owner', 'switchcast'), array('class' => 'switchcast-owner'));
+        }
+        if ($with_uploader) {
+            echo html_writer::tag('th', get_string('uploader', 'switchcast'), array('class' => 'switchcast-owner'));
+        }
+        if ($withactions) {
+            echo html_writer::tag('th', get_string('actions', 'switchcast'), array('class' => 'switchcast-actions'));
+        }
 
         echo html_writer::end_tag('tr');
     }
@@ -237,8 +264,12 @@ class mod_switchcast_renderer extends plugin_renderer_base {
      * @param scast_clip $sc_clip a SWITCHcast clip object
      * @param bool $with_actions display action buttons
      * @param bool $is_template use row as template
+     * @param string $allowed_actions comma separated list of allowed actions, used if $with_actions is true
+     * @param bool $with_owner display owner column even if not is_ivt()
+     * @param bool $with_uploader display uploader column
+     * @param bool $with_recordingstation
      */
-    function display_clip_outline(scast_clip $sc_clip, $with_actions = true, $is_template = false) {
+    function display_clip_outline(scast_clip $sc_clip, $with_actions = true, $is_template = false, $allowed_actions = 'all', $with_owner = false, $with_uploader = false, $with_recordingstation = true) {
         global $CFG, $DB, $cm;
 
         $title = $sc_clip->getTitle();
@@ -263,6 +294,16 @@ class mod_switchcast_renderer extends plugin_renderer_base {
             }
         }
 
+        $uploader = '';
+        if ($with_uploader) {
+            $uploaded_clip = $DB->get_record('switchcast_uploadedclip', array('ext_id' => $sc_clip->getExtId()));
+            if ($uploaded_clip) {
+                if ($uploader_moodle_user = $DB->get_record('user', array('id' => $uploaded_clip->userid))) {
+                    $uploader = $uploader_moodle_user->lastname.', '.$uploader_moodle_user->firstname;
+                }
+            }
+        }
+
         if ($is_template) {
             $extraclass = ($this->scobj->getIvt()) ? ('with-owner') : ('without-owner');
             echo html_writer::start_tag('tr', array('class' => 'switchcast-clip-template-row '.$extraclass));
@@ -272,7 +313,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         }
 
         echo html_writer::start_tag('td');
-        echo html_writer::start_tag('div', array('class' => 'cliplabel'));
+        echo html_writer::start_tag('div', array('class' => 'cliplabel', 'title' => $subtitle));
         echo html_writer::empty_tag('img', array('src' => $sc_clip->getCover()));
         echo html_writer::tag('h3', $title);
         echo html_writer::start_tag('div', array('class' => 'linkbar'));
@@ -300,29 +341,41 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         echo html_writer::tag('span', $sc_clip->getLocation());
         echo html_writer::end_tag('td');
 
-        echo html_writer::start_tag('td', array('class' => 'switchcast-recordingstation'));
-        echo html_writer::tag('span', $sc_clip->getRecordingStation());
-        echo html_writer::end_tag('td');
+        if ($with_recordingstation) {
+            echo html_writer::start_tag('td', array('class' => 'switchcast-recordingstation'));
+            echo html_writer::tag('span', $sc_clip->getRecordingStation());
+            echo html_writer::end_tag('td');
+        }
 
         echo html_writer::start_tag('td', array('class' => 'switchcast-recordingdate'));
         echo html_writer::tag('span', $sc_clip->getRecordingDate());
         echo html_writer::end_tag('td');
 
-        if ($this->scobj->getIvt() || $is_template) {
+        if (($this->scobj->getIvt() || $is_template || $with_owner) && ! $with_uploader) {
             echo html_writer::start_tag('td', array('class' => 'switchcast-owner'));
             echo html_writer::tag('span', $owner);
             echo html_writer::end_tag('td');
         }
 
-        if ($with_actions) {
+        if ($with_uploader) {
+            echo html_writer::start_tag('td', array('class' => 'switchcast-uploader'));
+            echo html_writer::tag('span', $uploader);
+            echo html_writer::end_tag('td');
+        }
+
+        $allowed_actions = explode(',', $allowed_actions);
+        if ($with_actions && count($allowed_actions)) {
             echo html_writer::start_tag('td', array('class' => 'switchcast-actions'));
-//            echo html_writer::tag('div', get_string('actions', 'switchcast'), array('class' => 'switchcast-hint-actions'));
             echo html_writer::start_tag('div', array('class' => 'switchcast-hidden-actions'));
-            echo html_writer::tag('a', get_string('setowner', 'switchcast'), array('href' => $CFG->wwwroot.'/mod/switchcast/clip_setowner.php?id='.$cm->id.'&clip_ext_id='.$sc_clip->getExtId(), 'class' => 'button switchcast-setowner'));
-//                }
-//            echo html_writer::tag('a', get_string('edit_at_switch_short', 'switchcast'), array('href' => $this->scobj->getEditLink(), 'class' => 'button switchcast-editclip'));
-            echo html_writer::tag('a', get_string('delete_clip', 'switchcast'), array('href' => $CFG->wwwroot.'/mod/switchcast/clip_delete.php?id='.$cm->id.'&clip_ext_id='.$sc_clip->getExtId(), 'class' => 'button switchcast-deleteclip'));
-            echo html_writer::tag('a', get_string('editmembers', 'switchcast'), array('href' => $CFG->wwwroot.'/mod/switchcast/clip_members.php?id='.$cm->id.'&clip_ext_id='.$sc_clip->getExtId(), 'class' => 'button switchcast-clipmembers'));
+            if (in_array('editdetails', $allowed_actions) || in_array('all', $allowed_actions)) {
+                echo html_writer::tag('a', get_string('editdetails', 'switchcast'), array('href' => $CFG->wwwroot.'/mod/switchcast/clip_editdetails.php?id='.$cm->id.'&clip_ext_id='.$sc_clip->getExtId(), 'class' => 'button switchcast-editdetails'));
+            }
+            if (in_array('invite', $allowed_actions) || in_array('all', $allowed_actions)) {
+                echo html_writer::tag('a', get_string('editmembers', 'switchcast'), array('href' => $CFG->wwwroot.'/mod/switchcast/clip_members.php?id='.$cm->id.'&clip_ext_id='.$sc_clip->getExtId(), 'class' => 'button switchcast-clipmembers'));
+            }
+            if (in_array('delete', $allowed_actions) || in_array('all', $allowed_actions)) {
+                echo html_writer::tag('a', get_string('delete_clip', 'switchcast'), array('href' => $CFG->wwwroot.'/mod/switchcast/clip_delete.php?id='.$cm->id.'&clip_ext_id='.$sc_clip->getExtId(), 'class' => 'button switchcast-deleteclip'));
+            }
             echo html_writer::end_tag('div');
             echo html_writer::end_tag('td');
         }
@@ -346,20 +399,33 @@ class mod_switchcast_renderer extends plugin_renderer_base {
 
 
     /**
-     * Displays user outlines of each channel producer (for the clip members table)
+     * Displays user outlines of the clip owner (for the clip members table)
      *
      */
     function display_clip_owner() {
         global $sc_clip;
         $owner_moodle_id = scast_user::getMoodleUserIdFromExtId($sc_clip->getOwner());
         if ($owner_moodle_id) {
-            $this->display_user_outline($owner_moodle_id, null, null, true);
+            $this->display_user_outline($owner_moodle_id, false, false, false);
         }
     }
 
 
     /**
-     * Displays user outlines of each channel producer (for the clip members table)
+     * Displays user outlines of the clip uploader (for the clip members table)
+     *
+     */
+    function display_clip_uploader() {
+        global $sc_clip, $DB;
+        $record = $DB->get_record('switchcast_uploadedclip', array('ext_id' => $sc_clip->getExtId()));
+        if ($record) {
+            $this->display_user_outline($record->userid, false, false, false, false, true);
+        }
+    }
+
+
+    /**
+     * Displays user outlines of each group member (for the clip members table)
      *
      */
     function display_group_members() {
@@ -380,6 +446,83 @@ class mod_switchcast_renderer extends plugin_renderer_base {
 
 
     /**
+     * Displays a list of a user's pending and uploaded clips
+     *
+     * @param bool $show_uploaded
+     * @param bool $show_pending
+     * @param bool $allusers
+     * @param bool $with_uploader display uploader instead of owner
+     */
+    function display_user_pending_clips($show_uploaded = true, $show_pending = true, $allusers = false, $with_uploader = false) {
+        global $DB, $switchcast, $USER, $context;
+
+        scast_obj::processUploadedClips();
+        $isproducer = has_capability('mod/switchcast:isproducer', $context);
+
+        if ($allusers && $isproducer) {
+            // display for all users
+            $uploaded_title = 'uploadedclips';
+            $pending_title = 'pendingclips';
+            $records = $DB->get_records('switchcast_uploadedclip', array('switchcastid' => $switchcast->id));
+        }
+        else {
+            // display for current user
+            $uploaded_title = 'myuploadedclips';
+            $pending_title = 'mypendingclips';
+            $records = $DB->get_records('switchcast_uploadedclip', array('userid' => $USER->id, 'switchcastid' => $switchcast->id));
+        }
+
+        $sc_obj = new scast_obj();
+        $sc_obj->doRead($switchcast->id);
+        $pending = array();
+        $uploaded = array();
+        foreach ($records as $record) {
+            if ($record->status == SWITCHCAST_CLIP_READY) {
+                // encoding finished
+                $uploaded[] = $record;
+            }
+            else if ($record->status == SWITCHCAST_CLIP_UPLOADED) {
+                // encoding in progress
+                $pending[] = $record;
+            }
+        }
+        // display clips uploaded by this user:
+        if ($show_uploaded && count($uploaded)) {
+            echo html_writer::tag('h3', get_string($uploaded_title, 'switchcast', count($uploaded)));
+            echo html_writer::start_tag('table', array('class' => 'switchcast-clips'));
+            $this->display_singleclip_table_header(false, !$with_uploader, $with_uploader, false);
+            foreach ($uploaded as $uploaded_record) {
+                $sc_clip = new scast_clip($sc_obj, $uploaded_record->ext_id);
+                $this->display_clip_outline($sc_clip, false, false, null, !$with_uploader, $with_uploader, false);
+            }
+            echo html_writer::end_tag('table');
+        }
+        // display this user's pending clips (uploaded but not yet available):
+        if ($show_pending && count($pending)) {
+            echo html_writer::tag('h3', get_string($pending_title, 'switchcast', count($pending)));
+            echo html_writer::start_tag('table', array('class' => 'switchcast-clips'));
+            $this->display_singleclip_table_header(false, !$with_uploader, $with_uploader, false);
+            foreach ($pending as $pending_record) {
+                try {
+                    $sc_clip = new scast_clip($sc_obj, $pending_record->ext_id);
+                }
+                catch (Exception $e) {
+                    if ($e->errorcode == 'xml_fail' && $e->module == 'switchcast' && preg_match('/not found/', $e->a)) {
+                        $DB->delete_records('switchcast_uploadedclip', array('id' => $pending_record->id));
+                    }
+                    continue;
+                }
+                $this->display_clip_outline($sc_clip, false, false, null, !$with_uploader, $with_uploader, false);
+            }
+            echo html_writer::end_tag('table');
+        }
+        if ($allusers && !count($records)) {
+            echo html_writer::tag('p', get_string('nouploadedclips', 'switchcast'));
+        }
+    }
+
+
+    /**
      * Displays user details in a table row (for the clip members page)
      *
      * @param int $userid Moodle user ID
@@ -387,9 +530,10 @@ class mod_switchcast_renderer extends plugin_renderer_base {
      * @param bool $isteacher
      * @param bool $isowner
      * @param bool $isgroupmember
+     * @param bool $isuploader
      * @return bool true if user was displayed
      */
-    function display_user_outline($userid, $isdeleteable = false, $isteacher = false, $isowner = false, $isgroupmember = false) {
+    function display_user_outline($userid, $isdeleteable = false, $isteacher = false, $isowner = false, $isgroupmember = false, $isuploader = false) {
         global $course, $cm, $OUTPUT, $DB, $context, $url;
 
         if (in_array($userid, $this->displayed_userids)) {
@@ -423,6 +567,9 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         }
         else if ($isgroupmember === true) {
             echo html_writer::tag('td', get_string('group_member', 'switchcast'));
+        }
+        else if ($isuploader === true) {
+            echo html_writer::tag('td', get_string('clip_uploader', 'switchcast'));
         }
         else {
             echo html_writer::tag('td', get_string('clip_member', 'switchcast'));
@@ -459,6 +606,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         echo html_writer::end_tag('tr');
         $this->display_channel_teachers();
         $this->display_clip_owner();
+        $this->display_clip_uploader();
         $this->display_group_members();
         $members = $sc_clip->getMembers();
         foreach ($members as $member) {
@@ -475,14 +623,20 @@ class mod_switchcast_renderer extends plugin_renderer_base {
      * @param string $action_url where the form shall be posted
      * @param string $buttonlabel value attribute of the submit button
      * @param bool $switchaaionly display users with ExternalAccount only
+     * @param bool $with_emtpyoption display 'remove user' option or not
+     * @param bool $selectonly display HTML SELECT element only
+     * @param int $selected_id if not zero, select OPTION with this index
      */
-    function display_user_selector($withproducers = false, $action_url = '', $buttonlabel = 'OK', $switchaaionly = false) {
+    function display_user_selector($withproducers = false, $action_url = '', $buttonlabel = 'OK', $switchaaionly = false, $with_emtpyoption = false, $selectonly = false, $selected_id = 0) {
         global $context, $url, $course;
         if ($withproducers === false) {
             $producers = get_users_by_capability($context, 'mod/switchcast:isproducer', 'u.id');
         }
         $possible_users = get_users_by_capability($context, 'mod/switchcast:use', 'u.id, u.lastname, u.firstname, u.maildisplay, u.email', 'u.lastname, u.firstname');
         $options = array();
+        if ($with_emtpyoption) {
+            $options[-1] = '('.get_string('removeowner', 'switchcast').')';
+        }
         foreach ($possible_users as $possible_user_id => $possible_user) {
             if (in_array($possible_user_id, $this->displayed_userids)) {
                 continue;

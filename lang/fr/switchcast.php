@@ -137,6 +137,7 @@ $string['switchcast:use'] = 'Afficher le contenu du canal SWITCHcast';
 $string['switchcast:isproducer'] = 'Enregistré comme producteur du canal SWITCHcast (et donc avec accès à tous les clips)';
 $string['switchcast:addinstance'] = 'Ajouter une nouvelle activité SWITCHcast';
 $string['switchcast:seeallclips'] = 'Peut voir tous les clips dans un cours';
+$string['switchcast:uploadclip'] = 'Peut ajouter un clip via Moodle';
 $string['nologfilewrite'] = 'Impossible d\'écrire le fichier journal : {$a}. Vérifiez les permissions du système de fichiers.';
 $string['noclipsinchannel'] = 'Ce canal ne contient pas de clips.';
 $string['novisibleclipsinchannel'] = 'Ce canal ne contient pas de clips auxquels vous ayez accès.';
@@ -153,17 +154,17 @@ $string['actions'] = 'Actions';
 $string['editmembers'] = 'Gérer les invitations au clip';
 $string['addmember'] = 'Inviter un participant au clip';
 $string['editmembers_long'] = 'Gérer les participants invités au clip';
-$string['setowner'] = 'Définir le propriétaire';
+$string['editdetails'] = 'Modifier les métadonnées';
 $string['delete_clip'] = 'Supprimer le clip';
 $string['flash'] = 'Flash';
 $string['mov'] = 'QuickTime';
 $string['m4v'] = 'Smartphone';
 $string['context'] = 'Contexte';
-$string['confirm_removeuser'] = 'Voulez-vous vraiment supproimer cet utilisateur ?';
+$string['confirm_removeuser'] = 'Voulez-vous vraiment supprimer cet utilisateur ?';
 $string['delete_clip_confirm'] = 'Voulez-vous vraiment supprimer ce clip ?';
 $string['back_to_channel'] = 'Retourner à la vue d\'ensemble du canal';
 $string['channel_several_refs'] = 'Ce canal est référencé dans d\'autres activités Moodle.';
-$string['set_clip_owner'] = 'Définir le propriétaire du clip';
+$string['set_clip_details'] = 'Définir les métadonnées du clip';
 $string['owner_no_switch_account'] = 'Il est impossible de définir &laquo;{$a}&raquo; comme propiétaire de ce clip, parce que cet utilisateur-trice n\'a pas de compte SWITCHaai.';
 $string['nomoreusers'] = 'Il n\'y a plus d\'utilisateurs disponibles à ajouter.';
 $string['nocontenthours'] = 'La valeur minimale pour le volume estimé de contenu (en heures) est de 1.';
@@ -171,6 +172,7 @@ $string['nodepartment'] = 'Vous devez compléter le champ Département.';
 $string['setnewowner'] = 'Définir comme nouveau propriétaire';
 $string['clip_owner'] = 'Propriétaire du clip';
 $string['group_member'] = 'Membre du groupe';
+$string['clip_uploader'] = 'A ajouté le clip';
 $string['aaiid_vs_moodleid'] = 'Le SWITCHaai Unique Id ne correspond pas à l\'identifiant Moodle !';
 $string['error_decoding_token'] = 'Erreur de décodage du jeton: {$a}';
 $string['error_opening_privatekey'] = 'Erreur de lecture du fichier de clef privée : {$a}';
@@ -184,13 +186,15 @@ $string['pagination'] = 'Affichage des clips <span class="switchcast-cliprange-f
 $string['filters'] = 'Filtres';
 $string['resetfilters'] = 'Remettre les filtres à zéro';
 $string['title'] = 'Titre';
+$string['subtitle'] = 'Sous-titre';
+$string['showsubtitles'] = 'afficher les sous-titres';
 $string['recordingstation'] = 'Station d\'enregistrement';
 $string['withoutowner'] = 'Pas de propriétaire';
 $string['notavailable'] = 'Désolé, cette activité est encore en phase de test et n\'est pas disponible pour le moment.';
 $string['xml_cache_time'] = 'Durée de vie du cache XML';
 $string['xml_cache_time_desc'] = 'Pour combien de temps (en secondes) les réponses XML du serveur SWITCHCast doivent-elles être mises en cache ? Une valeur de 0 correspond à la désactivation du cache.';
 $string['removeowner'] = 'Retirer le propriétaire';
-$string['channeldoesntexist'] = 'Le canal lié n\'existe pas (plus ?)';
+$string['channel_not_found'] = 'Le canal lié n\'existe pas (plus ?)';
 $string['channeldoesnotbelong'] = 'Le canal lié appartient à une autre organisation ({$a}) ; vous ne pouvez donc pas le modifier. Seul un enseignant de {$a} peut le modifier.';
 $string['switch_api_down'] = 'Le serveur SwitchCast ne répond pas.';
 $string['xml_fail'] = 'Erreur de communication avec le serveur SwitchCast.';
@@ -199,3 +203,42 @@ $string['curl_proxy'] = 'curl proxy';
 $string['curl_proxy_desc'] = 'Si curl doit passer par un proxy, le spécifier ici sous la forme <em>proxyhostname:port</em>';
 $string['moodleaccessonly'] = 'Ce clip n\'est accessible que depuis une activité Moodle.';
 $string['loggedout'] = 'Vous avez été déconnecté ; veuillez rafraîchir la page.';
+$string['redirfailed'] = 'La redirection a échoué.';
+$string['allow_userupload'] = 'Autoriser les utilisateurs à ajouter des vidéos';
+$string['allow_userupload_desc'] = 'Autoriser les utilisateurs à ajouter des vidéos via l\'activité Moodle. L\'option correspondante doit être activée dans les activités SWITCHcast en question.';
+$string['userupload_maxfilesize'] = 'Taille maximale de chaque fichier utilisateur';
+$string['userupload_maxfilesize_desc'] = 'Taille maximale de chaque fichier vidéo déposé.';
+$string['userupload_error'] = 'Une erreur est survenue pendant le transfert du fichier ; veuillez essayer à nouveau.';
+$string['fileis_notavideo'] = 'Ce fichier n\'est pas de type vidéo ! Le type MIME du fichier est : {$a}';
+$string['pendingclips'] = 'Il y a {$a} clips en cours de traitement dans ce canal';
+$string['mypendingclips'] = 'Vous avez {$a} clips en cours de traitement dans ce canal';
+$string['uploadedclips'] = '{$a} clips ont été ajoutés à ce canal';
+$string['myuploadedclips'] = 'Vous avez ajouté {$a} clips à ce canal';
+$string['clipready_subject'] = 'Votre nouveau clip est prêt';
+$string['clipready_body'] = 'Le clip "{$a->filename}" est prêt, vous le trouverez dans l\'activité Moodle suivante :
+
+{$a->link}
+';
+$string['clipstale_subject'] = 'Problème avec votre nouveau clip';
+$string['clipstale_subject_admin'] = 'Problème avec un clip déposé';
+$string['clipstale_body'] = 'Le clip "{$a->filename}" n\'a pas pu être converti correctement. Nous vous suggérons de tenter à nouveau le transfert dans l\'activité Moodle suivante :
+
+{$a->link}
+';
+$string['clipstale_body'] = 'Le clip "{$a->filename}" n\'a pas pu être converti correctement.
+
+    Activité: {$a->link}
+    Utilisateur: {$a->userfullname} {$a->userlink}
+';
+$string['view_useruploads'] = 'Afficher les clips déposés';
+$string['uploaded_clips'] = 'Clips déposés par les utilisateurs';
+$string['nouploadedclips'] = 'Aucun clip ajouté pour l\'instant.';
+$string['feature_forbidden'] = 'Vous ne pouvez pas utiliser cette fonctionnalité';
+$string['video_file'] = 'Ajoutez ici votre fichier vidéo';
+$string['video_title'] = 'Titre du clip vidéo';
+$string['video_subtitle'] = 'Sous titre du clip vidéo';
+$string['video_presenter'] = 'Présentateur-trice du clip vidéo';
+$string['video_location'] = 'Lieu de captation du clip vidéo';
+$string['scast_upload_form_hdr'] = 'Déposez ici votre clip vidéo';
+$string['uploader'] = 'Déposé par';
+

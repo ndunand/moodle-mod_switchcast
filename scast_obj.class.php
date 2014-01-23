@@ -152,7 +152,195 @@ class scast_obj {
 	}
 
 
-	public function getOrganization() {
+    /**
+     *
+     * @param type $enforceglobalmax
+     * @return array
+     */
+    public static function getMaxfilesizes($enforceglobalmax = false) {
+        $sizemb = get_string('sizemb');
+        $sizes = array(
+            5*1024*1024   => '5 '.$sizemb,
+            10*1024*1024  => '10 '.$sizemb,
+            20*1024*1024  => '20 '.$sizemb,
+            50*1024*1024  => '50 '.$sizemb,
+            100*1024*1024 => '100 '.$sizemb,
+            200*1024*1024 => '200 '.$sizemb,
+            500*1024*1024 => '500 '.$sizemb,
+        );
+        if ($enforceglobalmax) {
+            // enforme global maximum
+            $globalmax = scast_obj::getValueByKey('userupload_maxfilesize');
+            foreach ($sizes as $size => $label) {
+                if ($size > $globalmax) {
+                    unset($sizes[$size]);
+                }
+            }
+        }
+        return $sizes;
+    }
+
+
+    /**
+     *
+     * @return array
+     */
+    public function getUploadParams() {
+
+        $url = self::getValueByKey('switch_api_host');
+        $url .= '/users/'.$this->getSysAccount().'/channels/'.$this->getExtId().'/clips/new.xml';
+
+        $response = scast_xml::sendRequest($url, 'GET');
+
+        if (!isset($response->upload)) {
+            print_error('error');
+        }
+
+        $method = $response->upload->http->method;
+        $uploadurl = $response->upload->http->url;
+        $file_prefix = $response->upload->http->file_prefix;
+
+        return array($method, $uploadurl, $file_prefix);
+    }
+
+
+    /**
+     *
+     * @param array $options
+     * @return boolean|\SimpleXMLElement result or false if error
+     */
+    public function createClip($options) {
+
+        if (
+                   !isset($options['title'])
+                || !isset($options['ivt__owner'])
+                || !isset($options['uploaded_filename'])
+           ) {
+//            print_error('missing_param');
+        }
+
+        $options['issued_on'] = date('Y-m-d H:i');
+
+        $url = self::getValueByKey('switch_api_host');
+        $url .= '/users/'.$this->getSysAccount().'/channels/'.$this->getExtId().'/clips.xml';
+
+        foreach ($options as &$option) {
+            $option = htmlspecialchars($option, ENT_XML1, 'UTF-8');
+        }
+
+        $clip_xml = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<clip>
+    <title>{$options['title']}</title>
+    <subtitle>{$options['subtitle']}</subtitle>
+    <presenter>{$options['presenter']}</presenter>
+    <location>{$options['location']}</location>
+    <issued_on>{$options['issued_on']}</issued_on>
+    <ivt__owner>{$options['ivt__owner']}</ivt__owner>
+    <ivt__recordingstation></ivt__recordingstation>
+    <import>
+        <object>{$options['uploaded_filename']}</object>
+        <type>single_video</type>
+        <options>
+            <auto_publish>1</auto_publish>
+        </options>
+    </import>
+</clip>
+XML;
+
+        return scast_xml::sendRequest($url, 'POST', $clip_xml);
+
+    }
+
+
+    /**
+     *
+     * @return array
+     */
+    public static function processUploadedClips() {
+        global $CFG, $DB;
+
+        $admin = get_admin();
+        $switchcasts = $DB->get_records('switchcast', array('userupload' => 1));
+        $pending = array();
+        $uploaded = array();
+
+        // first, some maintenance: delete stale records (e.g. if an error occured at SCast)
+        $staletime = time() - SWITCHCAST_STALE_PERIOD;
+        $stale_records = $DB->get_records_select('switchcast_uploadedclip', 'status = '.SWITCHCAST_CLIP_UPLOADED.' AND timestamp < '.$staletime);
+        foreach ($stale_records as $stale_record) {
+            $user_stale = $DB->get_record('user', array('id' => $stale_record->userid));
+            if ($user_stale) {
+                // notify uploader
+                $a_s = new stdClass();
+                $a_s->filename = $stale_record->filename;
+                $cm_s = get_coursemodule_from_instance('switchcast', $stale_record->switchcastid);
+                $a_s->link = $CFG->wwwroot.'/mod/switchcast/view.php?id='.$cm_s->id;
+                email_to_user($user_stale, $admin, get_string('clipstale_subject', 'switchcast'), get_string('clipstale_body', 'switchcast', $a_s));
+                // notify admin too
+                $a_s->userlink = $CFG->wwwroot.'/user/profile.php?id='.$user_stale->id;
+                $a_s->userfullname = fullname($user_stale);
+                email_to_user($admin, $admin, get_string('clipstale_subject_admin', 'switchcast'), get_string('clipstale_body_admin', 'switchcast', $a_s));
+            }
+        }
+        $DB->delete_records_select('switchcast_uploadedclip', 'status = '.SWITCHCAST_CLIP_UPLOADED.' AND timestamp < '.$staletime);
+
+        foreach ($switchcasts as $switchcast) {
+
+            $sc_obj = new scast_obj();
+            try {
+                $sc_obj->doRead($switchcast->id);
+            }
+            catch (Exception $e) {
+                // error with this channel: do not halt because we might be processing other jobs (unattended)
+                continue;
+            }
+
+            $records = $DB->get_records('switchcast_uploadedclip', array('switchcastid' => $switchcast->id));
+            foreach ($records as $uploaded_clip) {
+                $channel_clips = $sc_obj->getClips();
+                $ext_ids = array();
+                foreach ($channel_clips as $channel_clip) {
+                    $ext_ids[] = (string)$channel_clip->ext_id;
+                }
+                if ($uploaded_clip->status == SWITCHCAST_CLIP_READY) {
+                    // encoding finished
+                    if (!in_array($uploaded_clip->ext_id, $ext_ids)) {
+                        // clip deleted
+                        $DB->delete_records('switchcast_uploadedclip', array('id' => $uploaded_clip->id));
+                    }
+                    else {
+                        $uploaded[] = $uploaded_clip->filename;
+                    }
+                }
+                else if (in_array($uploaded_clip->ext_id, $ext_ids)) {
+                    // clip being processed
+                    $uploaded[] = $uploaded_clip->filename;
+                    $uploaded_clip->status = SWITCHCAST_CLIP_READY;
+                    $DB->update_record('switchcast_uploadedclip', $uploaded_clip);
+                    $user = $DB->get_record('user', array('id' => $uploaded_clip->userid));
+                    if ($user !== false) {
+                        $a = new stdClass();
+                        $a->filename = $uploaded_clip->filename;
+                        $cm = get_coursemodule_from_instance('switchcast', $switchcast->id);
+                        $a->link = $CFG->wwwroot.'/mod/switchcast/view.php?id='.$cm->id;
+                        email_to_user($user, $admin, get_string('clipready_subject', 'switchcast'), get_string('clipready_body', 'switchcast', $a));
+                    }
+                }
+                else {
+                    $pending[] = $uploaded_clip->filename;
+                }
+            }
+        }
+        return array($pending, $uploaded);
+    }
+
+
+    /**
+     *
+     * @return string
+     */
+    public function getOrganization() {
 		return $this->organization_domain;
 	}
 

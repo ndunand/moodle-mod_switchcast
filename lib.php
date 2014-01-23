@@ -323,3 +323,15 @@ function switchcast_page_type_list($pagetype, $parentcontext, $currentcontext) {
     return $module_pagetype;
 }
 
+
+/**
+ * mod_switchcast cron
+ *
+ * @return true
+ */
+function switchcast_cron() {
+    mtrace('mod_switchcast: processing uploaded clips');
+    scast_obj::processUploadedClips();
+    return true;
+}
+
