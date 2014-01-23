@@ -99,8 +99,8 @@ $renderer = $PAGE->get_renderer('mod_switchcast');
 
 echo html_writer::tag('h2', get_string('delete_clip', 'switchcast'));
 echo html_writer::start_tag('table', array('class' => 'switchcast-clips'));
-$renderer->display_singleclip_table_header();
-$renderer->display_clip_outline($sc_clip, false);
+$renderer->display_singleclip_table_header(false, $sc_obj->getIvt(), $switchcast->userupload, false);
+$renderer->display_clip_outline($sc_clip, false, false, null, $sc_obj->getIvt(), $switchcast->userupload, false);
 echo html_writer::end_tag('table');
 
 $delete_url = new moodle_url('/mod/switchcast/clip_delete.php', array('sesskey' => sesskey(), 'confirm' => 1, 'id' => $id, 'clip_ext_id' => $clip_ext_id));

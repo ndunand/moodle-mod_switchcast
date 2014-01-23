@@ -166,7 +166,7 @@ else {
     echo $OUTPUT->header();
     $renderer = $PAGE->get_renderer('mod_switchcast');
     echo html_writer::tag('h2', get_string('upload_clip', 'switchcast'));
-    $renderer->display_user_pending_clips(true, true, false, true);
+    $renderer->display_user_pending_clips(true, true, false, false, false);
     // The following two set_context()'s are a dirty hack, but we have to do this,
     // otherwise the couse/site maxbytes limit is enforced.
     // (see MoodleQuickForm_filemanager class constructor)

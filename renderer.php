@@ -114,7 +114,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
             echo html_writer::end_tag('tr');
             foreach($this->clips as $clip) {
                 $sc_clip = new scast_clip($this->scobj, (string)$clip->ext_id);
-                $this->display_clip_outline($sc_clip, true, true);
+                $this->display_clip_outline($sc_clip, true, true, 'all', $this->scobj->getIvt());
                 break;
                 // NOTE ND : we display only one row, that we'll use as a template
                 // TODO : it's ugly, there must be a better way
@@ -265,7 +265,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
      * @param bool $with_actions display action buttons
      * @param bool $is_template use row as template
      * @param string $allowed_actions comma separated list of allowed actions, used if $with_actions is true
-     * @param bool $with_owner display owner column even if not is_ivt()
+     * @param bool $with_owner display owner column
      * @param bool $with_uploader display uploader column
      * @param bool $with_recordingstation
      */
@@ -351,7 +351,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         echo html_writer::tag('span', $sc_clip->getRecordingDate());
         echo html_writer::end_tag('td');
 
-        if (($this->scobj->getIvt() || $is_template || $with_owner) && ! $with_uploader) {
+        if ($is_template || $with_owner) {
             echo html_writer::start_tag('td', array('class' => 'switchcast-owner'));
             echo html_writer::tag('span', $owner);
             echo html_writer::end_tag('td');
@@ -451,9 +451,10 @@ class mod_switchcast_renderer extends plugin_renderer_base {
      * @param bool $show_uploaded
      * @param bool $show_pending
      * @param bool $allusers
-     * @param bool $with_uploader display uploader instead of owner
+     * @param bool $with_uploader display clip uploader
+     * @param bool $with_owner display clip owner
      */
-    function display_user_pending_clips($show_uploaded = true, $show_pending = true, $allusers = false, $with_uploader = false) {
+    function display_user_pending_clips($show_uploaded = true, $show_pending = true, $allusers = false, $with_uploader = false, $with_owner = true) {
         global $DB, $switchcast, $USER, $context;
 
         scast_obj::processUploadedClips();
@@ -490,10 +491,10 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         if ($show_uploaded && count($uploaded)) {
             echo html_writer::tag('h3', get_string($uploaded_title, 'switchcast', count($uploaded)));
             echo html_writer::start_tag('table', array('class' => 'switchcast-clips'));
-            $this->display_singleclip_table_header(false, !$with_uploader, $with_uploader, false);
+            $this->display_singleclip_table_header(false, $with_owner, $with_uploader, false);
             foreach ($uploaded as $uploaded_record) {
                 $sc_clip = new scast_clip($sc_obj, $uploaded_record->ext_id);
-                $this->display_clip_outline($sc_clip, false, false, null, !$with_uploader, $with_uploader, false);
+                $this->display_clip_outline($sc_clip, false, false, null, $with_owner, $with_uploader, false);
             }
             echo html_writer::end_tag('table');
         }
@@ -501,7 +502,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         if ($show_pending && count($pending)) {
             echo html_writer::tag('h3', get_string($pending_title, 'switchcast', count($pending)));
             echo html_writer::start_tag('table', array('class' => 'switchcast-clips'));
-            $this->display_singleclip_table_header(false, !$with_uploader, $with_uploader, false);
+            $this->display_singleclip_table_header(false, $with_owner, $with_uploader, false);
             foreach ($pending as $pending_record) {
                 try {
                     $sc_clip = new scast_clip($sc_obj, $pending_record->ext_id);
@@ -512,7 +513,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
                     }
                     continue;
                 }
-                $this->display_clip_outline($sc_clip, false, false, null, !$with_uploader, $with_uploader, false);
+                $this->display_clip_outline($sc_clip, false, false, null, $with_owner, $with_uploader, false);
             }
             echo html_writer::end_tag('table');
         }

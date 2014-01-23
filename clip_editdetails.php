@@ -143,8 +143,8 @@ $renderer = $PAGE->get_renderer('mod_switchcast');
 
 echo html_writer::tag('h2', get_string('set_clip_details', 'switchcast'));
 echo html_writer::start_tag('table', array('class' => 'switchcast-clips'));
-$renderer->display_singleclip_table_header();
-$renderer->display_clip_outline($sc_clip, false, null, null, true);
+$renderer->display_singleclip_table_header(false, true, $switchcast->userupload, false);
+$renderer->display_clip_outline($sc_clip, false, false, null, true, $switchcast->userupload, false);
 echo html_writer::end_tag('table');
 
 if ( has_capability('mod/switchcast:isproducer', $context) ) {

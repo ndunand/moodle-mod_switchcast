@@ -72,7 +72,7 @@ $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 $renderer = $PAGE->get_renderer('mod_switchcast');
 echo html_writer::tag('h2', get_string('uploaded_clips', 'switchcast'));
-$renderer->display_user_pending_clips(true, true, true, true);
+$renderer->display_user_pending_clips(true, true, true, true, $sc_obj->getIvt());
 echo html_writer::link($return_channel, get_string('back_to_channel','switchcast'));
 echo $OUTPUT->footer();
 
