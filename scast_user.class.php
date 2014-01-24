@@ -222,6 +222,12 @@ class scast_user {
 	 */
 	public function getChannels() {
 
+        if (!$this->getExternalAccount()) {
+            // prevent getting an error if we're trying to get a non-AAI user's
+            // channels by mistake
+            return array();
+        }
+
 		$url =  $this->switch_api;
 		$url .= '/users/'.$this->getExternalAccount().'/channels.xml';
 		$simplexmlobj = scast_xml::sendRequest($url, 'GET');

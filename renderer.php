@@ -139,7 +139,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         if (has_capability('mod/switchcast:isproducer', $context) || ($switchcast->userupload && has_capability('mod/switchcast:uploadclip', $context))) {
             echo html_writer::tag('a', get_string('upload_clip', 'switchcast'), array('href' => $CFG->wwwroot.'/mod/switchcast/upload_clip.php?id='.$cm->id, 'class' => 'upload button'));
         }
-        if (has_capability('mod/switchcast:isproducer', $context)) {
+        if (has_capability('mod/switchcast:isproducer', $context) && $switchcast->userupload) {
             echo html_writer::tag('a', get_string('view_useruploads', 'switchcast'), array('href' => $CFG->wwwroot.'/mod/switchcast/uploads.php?id='.$cm->id, 'class' => 'upload button'));
         }
         if ($this->scobj->isProducer($this->scuser->getExternalAccount())) {

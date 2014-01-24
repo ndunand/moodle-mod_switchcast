@@ -137,6 +137,13 @@ class mod_switchcast_mod_form extends moodleform_mod {
         }
 
         $channels = array();
+        if (!empty($this->_instance) && $scuser->getExternalAccount() == '') {
+            // Instance exists but $USER is not SWITCHaai => get channels list
+            // from $sysaccount, which MUST exist because we already checked.
+            // We freeze the channel selector further anyway because $USER's
+            // HomeOrg isn't the same as the channel's.
+            $userchannels = $sysaccount->getChannels();
+        }
         foreach ($userchannels->channel as $userchannel) {
             $channels[(string)$userchannel->ext_id] = (string)$userchannel->name;
         }
