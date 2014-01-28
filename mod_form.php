@@ -91,6 +91,10 @@ class mod_switchcast_mod_form extends moodleform_mod {
         // Miscellaneous settings :
         $mform->addElement('header', 'miscellaneoussettingshdr', get_string('miscellaneoussettings', 'form'));
 
+        if (scast_obj::getValueByKey('moreinfo_url')) {
+            $mform->addElement('static', 'moreinfo_url', get_string('miscellaneoussettings_help', 'switchcast'), html_writer::link(scast_obj::getValueByKey('moreinfo_url'), scast_obj::getValueByKey('moreinfo_url')));
+        }
+
         $mform->addElement('select', 'channelnew', get_string('channel', 'switchcast'), array(
             SWITCHCAST_CHANNEL_NEW      => get_string('channelnew', 'switchcast'),
             SWITCHCAST_CHANNEL_EXISTING => get_string('channelexisting', 'switchcast')
@@ -153,6 +157,7 @@ class mod_switchcast_mod_form extends moodleform_mod {
         $mform->addElement('text', 'newchannelname', get_string('newchannelname', 'switchcast'));
         $mform->disabledIf('newchannelname', 'channelnew', 'eq', SWITCHCAST_CHANNEL_EXISTING);
         $mform->setType('newchannelname', PARAM_TEXT);
+        $mform->addRule('newchannelname', null, 'required', null, 'client');
 
         if (!empty($this->_instance)) {
             $mform->freeze('channelnew');
@@ -170,6 +175,7 @@ class mod_switchcast_mod_form extends moodleform_mod {
 
         $mform->addElement('text', 'contenthours', get_string('contenthours', 'switchcast'));
         $mform->setType('contenthours', PARAM_INT);
+        $mform->addRule('contenthours', null, 'required', null, 'client');
 
         $lifetime = array(
             6  => get_string('months', 'switchcast', 6),
@@ -184,6 +190,7 @@ class mod_switchcast_mod_form extends moodleform_mod {
 
         $mform->addElement('text', 'department', get_string('department', 'switchcast'));
         $mform->setType('department', PARAM_TEXT);
+        $mform->addRule('department', null, 'required', null, 'client');
 
         $annotations = array(
             SWITCHCAST_NO_ANNOTATIONS => get_string('annotationsno', 'switchcast'),
@@ -202,6 +209,7 @@ class mod_switchcast_mod_form extends moodleform_mod {
         }
         $mform->addElement('select', 'template_id', get_string('template_id', 'switchcast'), $templates);
         $mform->disabledIf('template_id', 'channelnew', 'eq', SWITCHCAST_CHANNEL_EXISTING);
+        $mform->addHelpButton('template_id', 'template_id', 'switchcast');
 
         $yesno = array(0 => get_string('no'), 1 => get_string('yes'));
         $mform->addElement('select', 'is_ivt', get_string('is_ivt', 'switchcast'), $yesno);
@@ -211,7 +219,6 @@ class mod_switchcast_mod_form extends moodleform_mod {
         if (scast_obj::getValueByKey('allow_userupload') && scast_obj::getValueByKey('userupload_maxfilesize')) {
             $mform->addElement('select', 'userupload', get_string('allow_userupload', 'switchcast'), $yesno);
             $mform->addElement('select', 'userupload_maxfilesize', get_string('userupload_maxfilesize', 'switchcast'), scast_obj::getMaxfilesizes(true));
-            $mform->disabledIf('userupload_maxfilesize', 'userupload', 'eq', 0);
         }
 
         if ( !empty($this->_instance) && scast_obj::getOrganizationByEmail($scuser->getExternalAccount()) !== $this->current->organization_domain ) {

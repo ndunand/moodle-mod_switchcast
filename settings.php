@@ -35,12 +35,12 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('switchcast/switch_api_host',
             get_string('switch_api_host', 'switchcast'),
             get_string('switch_api_host_desc', 'switchcast'),
-            'https://api.cast.switch.ch/api/v2', PARAM_URL));
+            'https://api.cast.switch.ch/api/v2', PARAM_URL, 50));
 
     $settings->add(new admin_setting_configtext('switchcast/external_authority_host',
             get_string('external_authority_host', 'switchcast'),
             get_string('external_authority_host_desc', 'switchcast'),
-            $CFG->wwwroot, PARAM_URL));
+            $CFG->wwwroot, PARAM_URL, 50));
 
     $settings->add(new admin_setting_configtext('switchcast/external_authority_id',
             get_string('external_authority_id', 'switchcast'),
@@ -51,6 +51,11 @@ if ($ADMIN->fulltree) {
             get_string('enabled_templates', 'switchcast'),
             get_string('enabled_templates_desc', 'switchcast'),
             "1::Standard (3 formats)\n2::Standard (streaming only)",PARAM_TEXT, 60, 6));
+
+    $settings->add(new admin_setting_configtext('switchcast/moreinfo_url',
+            get_string('moreinfo_url', 'switchcast'),
+            get_string('moreinfo_url_desc', 'switchcast'),
+            '', PARAM_URL, 50));
 
     $settings->add(new admin_setting_configcheckbox('switchcast/allow_prod_channels',
             get_string('allow_prod_channels', 'switchcast'),
@@ -149,7 +154,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('switchcast/curl_proxy',
             get_string('curl_proxy', 'switchcast'),
             get_string('curl_proxy_desc', 'switchcast'),
-            '', PARAM_URL));
+            '', PARAM_URL, 50));
 
 }
 
