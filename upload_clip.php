@@ -68,12 +68,7 @@ $sc_obj->doRead($switchcast->id);
 $PAGE->set_title(format_string($switchcast->name));
 $PAGE->set_heading($course->fullname);
 
-if ($switchcast->userupload) {
-    $maxbytes = min(scast_obj::getValueByKey('userupload_maxfilesize'), $switchcast->userupload_maxfilesize);
-}
-else {
-    $maxbytes = scast_obj::getValueByKey('userupload_maxfilesize');
-}
+$maxbytes = min(scast_obj::getValueByKey('userupload_maxfilesize'), $switchcast->userupload_maxfilesize);
 
 $usercontext = context_user::instance($USER->id);
 
