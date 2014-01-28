@@ -174,14 +174,17 @@ class scast_clip {
      */
     public function doDelete() {
         global $DB;
-        $scast_user = new scast_user();
 
-        if(!$scast_user->getExternalAccount()) {
+        $sysaccount = scast_obj::getSysAccountByOrganization($this->scast_obj->getOrganization(), true);
+
+        if (!$sysaccount) {
             return false;
         }
 
+        // we only delete clips if we actually have a $sysaccount for this channel
+
         $url =  $this->scast_obj->getValueByKey('switch_api_host');
-        $url .= "/users/".$scast_user->getExternalAccount();
+        $url .= "/users/".$sysaccount;
         $url .= "/channels";
         $url .= "/".$this->channel_ext_id;
         $url .= "/clips";

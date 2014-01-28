@@ -120,16 +120,18 @@ class scast_obj {
 
 	/**
 	 * @param $organization
-	 * @return mixed
+	 * @param $force_org
+	 * @return string
 	 */
-	public static function getSysAccountByOrganization($organization) {
+	public static function getSysAccountByOrganization($organization, $force_org = false) {
 	    if (in_array($organization, self::getEnabledOrgnanizations())) {
             $sys_account_key = $organization . '_sysaccount';
             return self::getValueByKey($sys_account_key);
         }
-        else {
+        else if (!$force_org) {
             return self::getValueByKey('default_sysaccount');
         }
+        return '';
 	}
 
 

@@ -113,10 +113,7 @@ foreach ($clips as $clip) {
     if (has_capability('mod/switchcast:isproducer', $context)) {
         // current USER is channel producer in Moodle (i.e. Teacher)
         $scast_clip->editdetails_page = $CFG->wwwroot.'/mod/switchcast/clip_editdetails.php?id='.$cm->id.'&clip_ext_id='.$scast_clip->getExtId();
-        if ($sc_obj->isProducer($sc_user->getExternalAccount())) {
-            // current user is actual SwitchCast producer
-            $scast_clip->deleteclip_page = $CFG->wwwroot.'/mod/switchcast/clip_delete.php?id='.$cm->id.'&clip_ext_id='.$scast_clip->getExtId();
-        }
+        $scast_clip->deleteclip_page = $CFG->wwwroot.'/mod/switchcast/clip_delete.php?id='.$cm->id.'&clip_ext_id='.$scast_clip->getExtId();
     }
     if ($scast_clip->getOwnerUserId() == $USER->id) {
         // current USER is clip owner
