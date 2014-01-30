@@ -32,6 +32,40 @@ if ($ADMIN->fulltree) {
 
     include_once($CFG->dirroot.'/mod/switchcast/scast_obj.class.php');
 
+    $settings->add(new admin_setting_heading('switchcast/operationsettings', get_string('operationsettings', 'switchcast'), ''));
+
+    $settings->add(new admin_setting_configtext('switchcast/moreinfo_url',
+            get_string('moreinfo_url', 'switchcast'),
+            get_string('moreinfo_url_desc', 'switchcast'),
+            '', PARAM_URL, 50));
+
+    $settings->add(new admin_setting_configcheckbox('switchcast/allow_prod_channels',
+            get_string('allow_prod_channels', 'switchcast'),
+            get_string('allow_prod_channels_desc', 'switchcast'),
+            '1'));
+
+    $settings->add(new admin_setting_configcheckbox('switchcast/allow_test_channels',
+            get_string('allow_test_channels', 'switchcast'),
+            get_string('allow_test_channels_desc', 'switchcast'),
+            '0'));
+
+    $settings->add(new admin_setting_configcheckbox('switchcast/display_select_columns',
+            get_string('display_select_columns', 'switchcast'),
+            get_string('display_select_columns_desc', 'switchcast', $CFG->dataroot),
+            '0'));
+
+    $settings->add(new admin_setting_configcheckbox('switchcast/allow_userupload',
+            get_string('allow_userupload', 'switchcast'),
+            get_string('allow_userupload_desc', 'switchcast'),
+            '0'));
+
+    $settings->add(new admin_setting_configselect('switchcast/userupload_maxfilesize',
+            get_string('userupload_maxfilesize', 'switchcast'),
+            get_string('userupload_maxfilesize_desc', 'switchcast'),
+            10*1024*1024, scast_obj::getMaxfilesizes()));
+
+    $settings->add(new admin_setting_heading('switchcast/adminsettings', get_string('adminsettings', 'switchcast'), ''));
+
     $settings->add(new admin_setting_configtext('switchcast/switch_api_host',
             get_string('switch_api_host', 'switchcast'),
             get_string('switch_api_host_desc', 'switchcast'),
@@ -52,40 +86,10 @@ if ($ADMIN->fulltree) {
             get_string('enabled_templates_desc', 'switchcast'),
             "1::Standard (3 formats)\n2::Standard (streaming only)",PARAM_TEXT, 60, 6));
 
-    $settings->add(new admin_setting_configtext('switchcast/moreinfo_url',
-            get_string('moreinfo_url', 'switchcast'),
-            get_string('moreinfo_url_desc', 'switchcast'),
-            '', PARAM_URL, 50));
-
-    $settings->add(new admin_setting_configcheckbox('switchcast/allow_prod_channels',
-            get_string('allow_prod_channels', 'switchcast'),
-            get_string('allow_prod_channels_desc', 'switchcast'),
-            '1'));
-
-    $settings->add(new admin_setting_configcheckbox('switchcast/allow_test_channels',
-            get_string('allow_test_channels', 'switchcast'),
-            get_string('allow_test_channels_desc', 'switchcast'),
-            '0'));
-
-    $settings->add(new admin_setting_configcheckbox('switchcast/allow_userupload',
-            get_string('allow_userupload', 'switchcast'),
-            get_string('allow_userupload_desc', 'switchcast'),
-            '0'));
-
-    $settings->add(new admin_setting_configselect('switchcast/userupload_maxfilesize',
-            get_string('userupload_maxfilesize', 'switchcast'),
-            get_string('userupload_maxfilesize_desc', 'switchcast'),
-            10*1024*1024, scast_obj::getMaxfilesizes()));
-
     $settings->add(new admin_setting_configtext('switchcast/xml_cache_time',
             get_string('xml_cache_time', 'switchcast'),
             get_string('xml_cache_time_desc', 'switchcast'),
             '60', PARAM_INT));
-
-    $settings->add(new admin_setting_configcheckbox('switchcast/display_select_columns',
-            get_string('display_select_columns', 'switchcast'),
-            get_string('display_select_columns_desc', 'switchcast', $CFG->dataroot),
-            '0'));
 
     $settings->add(new admin_setting_configcheckbox('switchcast/logging_enabled',
             get_string('logging_enabled', 'switchcast'),

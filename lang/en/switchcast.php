@@ -49,7 +49,7 @@ $string['chooseaction'] = 'Choose an action ...';
 $string['limit'] = 'Limit';
 $string['limitanswers'] = 'Limit the number of responses allowed';
 $string['modulename'] = 'SWITCHcast channel';
-$string['modulename_help'] = 'The SWITCHcast module allows a teacher to manage a SWITCHcast channel from his Moodle course. More info available at <a href="{$CFG->switch_api_host}">{$CFG->switch_api_host}</a>.';
+$string['modulename_help'] = 'The SWITCHcast module allows a teacher to manage a SWITCHcast video channel from a Moodle course.';
 $string['modulenameplural'] = 'SWITCHcast channels';
 $string['mustchooseone'] = 'You must choose an answer before saving.  Nothing was saved.';
 $string['noresultsviewable'] = 'The results are not currently viewable.';
@@ -245,4 +245,6 @@ $string['uploader'] = 'Uploaded by';
 $string['moreinfo_url'] = 'Link for more information';
 $string['moreinfo_url_desc'] = 'If provided this link will show when adding/modifying a SWITCHcast activity.';
 $string['miscellaneoussettings_help'] = 'For more info about these settings, see';
+$string['operationsettings'] = 'Plugin settings';
+$string['adminsettings'] = 'Technical settings';
 

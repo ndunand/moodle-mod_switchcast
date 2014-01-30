@@ -49,7 +49,7 @@ $string['chooseaction'] = 'Choisissez une action ...';
 $string['limit'] = 'Limite';
 $string['limitanswers'] = 'Limiter le nombre de réponses permises';
 $string['modulename'] = 'Canal SWITCHcast';
-$string['modulename_help'] = 'Le module SWITCHcast permet aux enseignants de gérer un canal directement à partir de cet espace Moodle. Pour plus d\'informations, voir <a href="{$CFG->switch_api_host}">{$CFG->switch_api_host}</a>.';
+$string['modulename_help'] = 'Le module SWITCHcast permet aux enseignants de gérer un canal de vidéos SWITCHchast directement à partir d\'un espace Moodle.';
 $string['modulenameplural'] = 'Canaux SWITCHcast';
 $string['mustchooseone'] = 'Vous devez choisir une réponse avant d\'enregistrer. Rien a été enregistré.';
 $string['noresultsviewable'] = 'Les résultats ne sont pas disponibles actuellement.';
@@ -245,4 +245,6 @@ $string['uploader'] = 'Déposé par';
 $string['moreinfo_url'] = 'Lien vers plus d\'informations';
 $string['moreinfo_url_desc'] = 'Si renseigné, ce lien sera affiché lors de la création/modification d\'une activité SWITCHcast.';
 $string['miscellaneoussettings_help'] = 'Pour plus d\'informations sur ces paramètres, voir';
+$string['operationsettings'] = 'Réglages du plugin';
+$string['adminsettings'] = 'Réglages techniques';
 
