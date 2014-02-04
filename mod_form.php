@@ -157,7 +157,6 @@ class mod_switchcast_mod_form extends moodleform_mod {
         $mform->addElement('text', 'newchannelname', get_string('newchannelname', 'switchcast'));
         $mform->disabledIf('newchannelname', 'channelnew', 'eq', SWITCHCAST_CHANNEL_EXISTING);
         $mform->setType('newchannelname', PARAM_TEXT);
-        $mform->addRule('newchannelname', null, 'required', null, 'client');
 
         if (!empty($this->_instance)) {
             $mform->freeze('channelnew');
@@ -287,6 +286,9 @@ class mod_switchcast_mod_form extends moodleform_mod {
             }
             if ((int)$data['contenthours'] < 1) {
                 $errors['contenthours'] = get_string('nocontenthours', 'switchcast');
+            }
+            if (!$data['newchannelname']) {
+                $errors['newchannelname'] = get_string('required');
             }
         }
         if ($data['channelnew'] == SWITCHCAST_CHANNEL_EXISTING) {
