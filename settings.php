@@ -107,17 +107,19 @@ if ($ADMIN->fulltree) {
             '', PARAM_RAW));
 
     $enabled_institutions_rec = $DB->get_record('config_plugins', array('plugin' => 'switchcast', 'name' => 'enabled_institutions'));
-    $switchcast_institutions = explode(',', $enabled_institutions_rec->value);
-    foreach ($switchcast_institutions as $switchcast_institution) {
-        $switchcast_institution = trim($switchcast_institution);
-        if (!$switchcast_institution) {
-            continue;
+    if ($enabled_institutions_rec) {
+        $switchcast_institutions = explode(',', $enabled_institutions_rec->value);
+        foreach ($switchcast_institutions as $switchcast_institution) {
+            $switchcast_institution = trim($switchcast_institution);
+            if (!$switchcast_institution) {
+                continue;
+            }
+            $switchcast_institution_id = str_replace('.', 'DOT', $switchcast_institution);
+            $settings->add(new admin_setting_configtext('switchcast/'.$switchcast_institution_id.'_sysaccount',
+                    get_string('sysaccount', 'switchcast', $switchcast_institution),
+                    get_string('sysaccount_desc', 'switchcast', $switchcast_institution),
+                    '', PARAM_EMAIL));
         }
-        $switchcast_institution_id = str_replace('.', 'DOT', $switchcast_institution);
-        $settings->add(new admin_setting_configtext('switchcast/'.$switchcast_institution_id.'_sysaccount',
-                get_string('sysaccount', 'switchcast', $switchcast_institution),
-                get_string('sysaccount_desc', 'switchcast', $switchcast_institution),
-                '', PARAM_EMAIL));
     }
 
     $settings->add(new admin_setting_configtext('switchcast/uid_field',
