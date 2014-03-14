@@ -35,6 +35,9 @@ define('SWITCHCAST_CLIP_READY', 2);
 define('SWITCHCAST_CLIP_TRYAGAIN', 3);
 define('SWITCHCAST_STALE_PERIOD', 3600*6);
 
+// fix for ENT_XML1 not defined in PHP < 5.4.0
+defined('ENT_XML1') or define('ENT_XML1', 16);
+
 
 class scast_clip {
 
