@@ -26,10 +26,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version    = 2014010100;
+$module->version    = 2014030100;
 $module->requires   = 2011120500;       // Requires this Moodle version
 $module->maturity   = MATURITY_STABLE;
-$module->release    = '1.2';
+$module->release    = '1.2.1';
 
 $module->component  = 'mod_switchcast';     // Full name of the plugin (used for diagnostics)
 $module->cron       = 300;

@@ -575,7 +575,7 @@ class scast_clip {
         }
         else {
             $u = $DB->get_record('user', array($uid_field => $this->getOwner()));
-            $userid = $u->$id;
+            $userid = $u->id;
         }
         return $userid;
     }
