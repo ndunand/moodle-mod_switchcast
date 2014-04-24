@@ -570,7 +570,7 @@ class scast_clip {
             $params = explode('::', $uid_field);
             $table = $params[0];
             $fieldid = $params[1];
-            $u = $DB->get_record_select($table, 'fieldid = '.(int)$fieldid.' AND data = \''.(string)$this->getOwner().'\'');
+            $u = $DB->get_record_select($table, 'fieldid = '.(int)$fieldid.' AND data = \''.(string)$this->getOwner().'\'', array(), '*', IGNORE_MULTIPLE);
             $userid = $u->userid;
         }
         else {

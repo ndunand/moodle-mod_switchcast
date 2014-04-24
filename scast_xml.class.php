@@ -90,12 +90,23 @@ class scast_xml {
             $ch = curl_init();
 
             if (isset($a_file)) {
+                if (!filesize($a_file) || !is_readable($a_file)) {
+                    scast_log::write("CURL UPLOAD ERROR : empty or unreadable file");
+                    throw new moodle_exception('uploaderror', 'switchcast');
+                }
                 $fh = fopen($a_file, "rb");
+                if (!$fh) {
+                    scast_log::write("CURL UPLOAD ERROR : unable to open file");
+                    throw new moodle_exception('uploaderror', 'switchcast');
+                }
+                curl_setopt($ch, CURLOPT_TIMEOUT_MS, 300000);
                 curl_setopt($ch, CURLOPT_PUT, true); // must be set, elsewise the multipart info will also be sent
                 curl_setopt($ch, CURLOPT_INFILE, $fh);
                 curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_VERBOSE, (bool)scast_obj::getValueByKey('logging_enabled'));
+            }
+            else {
+                curl_setopt($ch, CURLOPT_TIMEOUT_MS, 10000);
             }
 
             curl_setopt($ch, CURLOPT_CAINFO, scast_obj::getValueByKey('cacrt_file'));
@@ -110,10 +121,11 @@ class scast_xml {
                 curl_setopt($ch, CURLOPT_PROXY, scast_obj::getValueByKey('curl_proxy'));
             }
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $a_xml);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: text/xml"));
+            if (!$a_file) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $a_xml);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: text/xml"));
+            }
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $a_request);
-            curl_setopt($ch, CURLOPT_TIMEOUT_MS, 10000);
 
             $output = curl_exec($ch);
             $curl_errno = curl_errno($ch); // 0 if fine
@@ -123,6 +135,7 @@ class scast_xml {
                 fclose($fh);
                 curl_close($ch);
                 if ($curl_errno) {
+                    scast_log::write("                  : ".$output);
                     throw new moodle_exception('uploaderror', 'switchcast');
                 }
                 return basename($a_file);

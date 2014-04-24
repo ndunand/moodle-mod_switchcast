@@ -25,6 +25,7 @@
  */
 
 require_once('../../config.php');
+require_once($CFG->dirroot.'/user/files_form.php');
 require_once($CFG->dirroot.'/repository/lib.php');
 require_once($CFG->dirroot.'/mod/switchcast/lib.php');
 require_once($CFG->dirroot.'/mod/switchcast/scast_obj.class.php');
@@ -94,6 +95,7 @@ else if ($formdata = $mform->get_data()) {
     foreach($files as $file) {
         $filesize = $file->get_filesize();
         if (!$filesize) {
+            $file->delete();
             continue;
         }
         if ($file->get_mimetype() && substr($file->get_mimetype(), 0, 5) !== 'video') {
@@ -103,7 +105,8 @@ else if ($formdata = $mform->get_data()) {
 
         $a_file = $file->copy_content_to_temp();
         $filename = $file->get_filename();
-        $filetoupload = $CFG->dataroot.'/temp/files/mod_switchcast_'.md5(microtime()).'_'.$filename;
+        preg_match('/\.([^.]+)$/', $filename, $extension);
+        $filetoupload = $CFG->dataroot.'/temp/files/mod_switchcast_'.md5(microtime()).'.'.$extension[1];
         rename($a_file, $filetoupload);
 
         list($upload_method, $upload_url, $upload_file_prefix) = $sc_obj->getUploadParams();
@@ -112,11 +115,13 @@ else if ($formdata = $mform->get_data()) {
         }
         catch (Exception $e) {
             unlink($filetoupload);
+            $file->delete();
             $retryurl = new moodle_url($url, array('formdata' => serialize($formdata)));
             print_error('userupload_error', 'switchcast', $retryurl);
 //            $result = false;
 //            continue;
         }
+        unlink($filetoupload);
         $file->delete();
         $result = $sc_obj->createClip(array(
             'title' => $formdata->cliptitle,
@@ -126,7 +131,6 @@ else if ($formdata = $mform->get_data()) {
             'ivt__owner' => scast_user::getExtIdFromMoodleUserId($USER->id),
             'uploaded_filename' => $uploaded_filename,
         ));
-        unlink($filetoupload);
     }
 }
 

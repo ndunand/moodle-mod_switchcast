@@ -111,7 +111,7 @@ class scast_user {
             $params = explode('::', $uid_field);
             $table = $params[0];
             $fieldid = $params[1];
-            $u = $DB->get_record_select($table, $DB->sql_compare_text('data') . ' = \'' . (string)$ext_id . '\' AND fieldid = ' . (int)$fieldid);
+            $u = $DB->get_record_select($table, $DB->sql_compare_text('data') . ' = \'' . (string)$ext_id . '\' AND fieldid = ' . (int)$fieldid, array(), '*', IGNORE_MULTIPLE);
             if ($u) {
                 $moodleid = $u->userid;
             }
