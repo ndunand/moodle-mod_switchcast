@@ -295,6 +295,12 @@ XML;
             }
             catch (Exception $e) {
                 // error with this channel: do not halt because we might be processing other jobs (unattended)
+                if ($e->errorcode === 'channel_not_found') {
+                    // channel not existing anymore: try and prevent looking for it over and over again forever!
+                    // deactivate userupload to solve this problem
+                    $switchcast->userupload = 0;
+                    $DB->update_record('switchcast', $switchcast);
+                }
                 continue;
             }
 
