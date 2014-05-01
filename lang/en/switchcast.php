@@ -247,4 +247,7 @@ $string['moreinfo_url_desc'] = 'If provided this link will show when adding/modi
 $string['miscellaneoussettings_help'] = 'For more info about these settings, see';
 $string['operationsettings'] = 'Plugin settings';
 $string['adminsettings'] = 'Technical settings';
+$string['uploadfile_extensions'] = 'accepted file extensions';
+$string['uploadfile_extensions_desc'] = 'File extensions accepted by SWITCHcast for uploading files. Modify this if the SWITCHcast conditions change.';
+$string['fileis_notextensionallowed'] = 'File extension not allowed: {$a->yours}. Allowed file extensions are: {$a->allowed}';
 

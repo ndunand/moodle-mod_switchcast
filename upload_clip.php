@@ -103,10 +103,19 @@ else if ($formdata = $mform->get_data()) {
             print_error('fileis_notavideo', 'switchcast', $url, $file->get_mimetype());
         }
 
-        $a_file = $file->copy_content_to_temp();
         $filename = $file->get_filename();
         preg_match('/\.([^.]+)$/', $filename, $extension);
+        
+        if (!in_array($extension[1], scast_obj::getAllowedFileExtensions())) {
+            $file->delete();
+            $a = new stdClass();
+            $a->yours = $extension[1];
+            $a->allowed = implode(', ', scast_obj::getAllowedFileExtensions());
+            print_error('fileis_notextensionallowed', 'switchcast', $url, $a);
+        }
+        
         $filetoupload = $CFG->dataroot.'/temp/files/mod_switchcast_'.md5(microtime()).'.'.$extension[1];
+        $a_file = $file->copy_content_to_temp();
         rename($a_file, $filetoupload);
 
         list($upload_method, $upload_url, $upload_file_prefix) = $sc_obj->getUploadParams();

@@ -64,6 +64,11 @@ if ($ADMIN->fulltree) {
             get_string('userupload_maxfilesize_desc', 'switchcast'),
             10*1024*1024, scast_obj::getMaxfilesizes()));
 
+    $settings->add(new admin_setting_configtext('switchcast/uploadfile_extensions',
+            get_string('uploadfile_extensions', 'switchcast'),
+            get_string('uploadfile_extensions_desc', 'switchcast'),
+            'mov, mp4, m4v, avi, mpg, mpe, mpeg, mts, vob, flv, mkv, dv, wmv, mp3, aac, wav, wma, divx', PARAM_RAW, 50));
+
     $settings->add(new admin_setting_heading('switchcast/adminsettings', get_string('adminsettings', 'switchcast'), ''));
 
     $settings->add(new admin_setting_configtext('switchcast/switch_api_host',

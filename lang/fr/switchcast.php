@@ -247,4 +247,7 @@ $string['moreinfo_url_desc'] = 'Si renseigné, ce lien sera affiché lors de la 
 $string['miscellaneoussettings_help'] = 'Pour plus d\'informations sur ces paramètres, voir';
 $string['operationsettings'] = 'Réglages du plugin';
 $string['adminsettings'] = 'Réglages techniques';
+$string['uploadfile_extensions'] = 'extensions de fichier acceptées';
+$string['uploadfile_extensions_desc'] = 'Les extensions de fichier suivantes sont acceptées par SWITCHcast. A modifier si le service SWITCHcast change.';
+$string['fileis_notextensionallowed'] = 'Type de fichier non supporté : {$a->yours}. Les types de fichier supportés sont : {$a->allowed}';
 

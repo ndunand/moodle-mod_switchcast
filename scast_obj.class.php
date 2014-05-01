@@ -187,6 +187,19 @@ class scast_obj {
      *
      * @return array
      */
+    public static function getAllowedFileExtensions() {
+        $extensions = array();
+        foreach(explode(',', self::getValueByKey('uploadfile_extensions')) as $extension) {
+            $extensions[] = trim($extension);
+        }
+        return $extensions;
+    }
+
+
+    /**
+     *
+     * @return array
+     */
     public function getUploadParams() {
 
         $url = self::getValueByKey('switch_api_host');
