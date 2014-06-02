@@ -173,6 +173,9 @@ else {
     echo $OUTPUT->header();
     $renderer = $PAGE->get_renderer('mod_switchcast');
     echo html_writer::tag('h2', get_string('upload_clip', 'switchcast'));
+    $upl_help = $OUTPUT->help_icon('upload_clip_misc', 'switchcast', '');
+    $upl_a = scast_obj::getValueByKey('uploadfile_extensions');
+    echo html_writer::tag('p', get_string('upload_clip_info', 'switchcast', $upl_a) . $upl_help);
     $renderer->display_user_pending_clips(true, true, false, false, false);
     // The following two set_context()'s are a dirty hack, but we have to do this,
     // otherwise the couse/site maxbytes limit is enforced.

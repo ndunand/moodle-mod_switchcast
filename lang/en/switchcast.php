@@ -250,4 +250,14 @@ $string['adminsettings'] = 'Technical settings';
 $string['uploadfile_extensions'] = 'accepted file extensions';
 $string['uploadfile_extensions_desc'] = 'File extensions accepted by SWITCHcast for uploading files. Modify this if the SWITCHcast conditions change.';
 $string['fileis_notextensionallowed'] = 'File extension not allowed: {$a->yours}. Allowed file extensions are: {$a->allowed}';
+$string['upload_clip_info'] = 'Please ensure that your file is of one of the following formats: <strong>{$a}</strong>.<br />If it is not the case, please follow the instructions provided in the following help button prior to uploading your video.';
+$string['upload_clip_misc'] = 'Converting a video file';
+$string['upload_clip_misc_help'] = 'To ensure your file is accepted by the system, please use the recommended file formats. If your file format is not supported or in doubt, use the Handbrake software to convert your video file:<br />
+<ul>
+    <li>Download the Handbrake software from http://handbrake.fr</li>
+    <li>Install and run the software</li>
+    <li>Select the video file</li>
+    <li>Chose the "Universal" setting</li>
+    <li>Click the green "Start" button.</li>
+</ul>';
 
