@@ -1,54 +1,27 @@
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Version information
- *
- * @package    mod
- * @subpackage switchcast
- * @copyright  2013 Université de Lausanne
- * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
- * @author     Fabian Schmid <schmid@ilub.unibe.ch>
- * @author     Martin Studer <ms@studer-raimann.ch>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+# Prerequisites:
 
-
-Prerequisites:
-
- - Moodle version 2.x (tested on Moodle 2.3 - 2.6)
+ - Moodle version 2.7
  - for the full feature set, the SWITCHaai UniqueID of your users must be available as a Moodle user profile field
  - PHP with CURL module supporting HTTPS protobol
  - PHP with SimpleXML module
 
 
-Preliminary step:
+# Preliminary step:
 
 Configure a SWITCHcast external authority. This will allow SWITCHcast to delegate authority to your Moodle regarding access rights to clips belonging to certain channels. More information available at http://help.switch.ch/cast/integration/ext_auth/ .
 
 You will have to contact Switch in order to set this up; they will provide you with the necessary private keys and certificates.
 
 
-Module installation:
+# Module installation:
 
 The latest version of the mod_switchcast Moodle activity plugin is available on GitHub : https://github.com/ndunand/moodle-mod_switchcast .
 
 Install as any other activity module into your Moodle's mod/ directory, then visit http://your.moodle/admin/index.php to proceed to the module installation.
 
 
-Module setup:
+# Module setup:
 
 Last, proceed to the module settings (via Site administration -> Plugins -> Activity modules -> SWITCHcast, or directly at http://your.moodle/admin/settings.php?section=modsettingswitchcast ) and fill in the following parameters:
 
