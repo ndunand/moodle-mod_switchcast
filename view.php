@@ -76,7 +76,16 @@ $PAGE->set_heading($course->fullname);
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
-add_to_log($course->id, 'switchcast', 'view', 'view.php?id='.$cm->id, $switchcast->name, $cm->id);
+$eventparams = array(
+    'context' => $context,
+    'objectid' => $switchcast->id
+);
+$event = \mod_switchcast\event\course_module_viewed::create($eventparams);
+$event->add_record_snapshot('course_modules', $cm);
+$event->add_record_snapshot('course', $course);
+$event->add_record_snapshot('switchcast', $switchcast);
+$event->trigger();
+
 
 echo $OUTPUT->header();
 

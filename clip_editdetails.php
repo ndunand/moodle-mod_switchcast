@@ -97,7 +97,6 @@ if (    in_array($action, array('edit'))
                     $sc_obj->registerUser($newowner);
                     $sc_clip->setOwner($newowner_aaiUniqueId);
                     $sc_clip->doUpdate();
-                    add_to_log($course->id, 'switchcast', 'set clip owner', 'clip_editdetails.php?id='.$id.'&clip_id='.$clip_ext_id, $sc_clip->getOwner());
                 }
                 else {
                     print_error('owner_no_switch_account', 'switchcast', $url, $setuser->lastname.', '.$setuser->firstname);
@@ -105,7 +104,15 @@ if (    in_array($action, array('edit'))
             }
         }
         $sc_clip->doUpdate();
-        add_to_log($course->id, 'switchcast', 'set clip metadata', 'clip_editdetails.php?id='.$id.'&clip_id='.$clip_ext_id);
+        $eventparams = array(
+            'context' => $context,
+            'objectid' => $switchcast->id
+        );
+        $event = \mod_switchcast\event\clip_editdetails::create($eventparams);
+        $event->add_record_snapshot('course_modules', $cm);
+        $event->add_record_snapshot('course', $course);
+        $event->add_record_snapshot('switchcast', $switchcast);
+        $event->trigger();
     }
 /*
     else if ($action === 'add' && $userid !== 0) {

@@ -100,7 +100,21 @@ if (    $action !== '' && $userid !== 0
         $sc_clip->deleteMember($userid, $course->id, $switchcast->id);
     }
 
-    add_to_log($course->id, 'switchcast', 'modify clip members', 'clip_members.php?id='.$id.'&clip_id='.$clip_ext_id, $sc_clip->getTitle().': '.$action.' user ID '.$userid, $cm->id);
+    $eventparams = array(
+        'context' => $context,
+        'objectid' => $switchcast->id,
+        'relateduserid' => $userid
+    );
+    if ($action == 'add') {
+        $event = \mod_switchcast\event\member_invited::create($eventparams);
+    }
+    else if ($action == 'remove') {
+        $event = \mod_switchcast\event\member_revoked::create($eventparams);
+    }
+    $event->add_record_snapshot('course_modules', $cm);
+    $event->add_record_snapshot('course', $course);
+    $event->add_record_snapshot('switchcast', $switchcast);
+    $event->trigger();
 
     redirect($url);
 
@@ -108,11 +122,6 @@ if (    $action !== '' && $userid !== 0
 
 else if ($action !== '') {
     print_error('actionnotallowed', null, $return_channel);
-}
-
-else {
-    // no action to be performed
-    add_to_log($course->id, 'switchcast', 'view clip members', 'clip_members.php?id='.$id.'&clip_id='.$clip_ext_id, $sc_clip->getTitle(), $cm->id);
 }
 
 

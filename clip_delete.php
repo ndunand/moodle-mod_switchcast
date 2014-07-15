@@ -81,7 +81,15 @@ if (    $confirm === 1
      */
     $sc_clip->doDelete();
 
-    add_to_log($course->id, 'switchcast', 'delete clip', 'clip_delete.php?id='.$id.'&clip_id='.$clip_ext_id, $sc_clip->getTitle());
+    $eventparams = array(
+        'context' => $context,
+        'objectid' => $switchcast->id
+    );
+    $event = \mod_switchcast\event\clip_deleted::create($eventparams);
+    $event->add_record_snapshot('course_modules', $cm);
+    $event->add_record_snapshot('course', $course);
+    $event->add_record_snapshot('switchcast', $switchcast);
+    $event->trigger();
 
     redirect($return_channel);
 

@@ -37,6 +37,15 @@ $url = base64_decode($url_b64);
 
 if ($tk == sha1( scast_obj::getValueByKey('default_sysaccount') . $swid . $url )) {
     $SESSION->switchcastid = $swid;
+    $eventparams = array(
+        'context' => $context,
+        'objectid' => $switchcast->id
+    );
+    $event = \mod_switchcast\event\clip_viewed::create($eventparams);
+    $event->add_record_snapshot('course_modules', $cm);
+    $event->add_record_snapshot('course', $course);
+    $event->add_record_snapshot('switchcast', $switchcast);
+    $event->trigger();
     redirect($url);
     exit;
 }

@@ -166,6 +166,15 @@ if (isset($formdata) && isset($result)) {
     if (!$DB->insert_record('switchcast_uploadedclip', $uploaded_clip)) {
         print_error('error');
     }
+    $eventparams = array(
+        'context' => $context,
+        'objectid' => $switchcast->id
+    );
+    $event = \mod_switchcast\event\clip_uploaded::create($eventparams);
+    $event->add_record_snapshot('course_modules', $cm);
+    $event->add_record_snapshot('course', $course);
+    $event->add_record_snapshot('switchcast', $switchcast);
+    $event->trigger();
     redirect($url);
 }
 else {

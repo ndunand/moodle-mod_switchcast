@@ -260,4 +260,16 @@ $string['upload_clip_misc_help'] = 'Afin de s\'assurer que votre fichier vidéo 
     <li>Choisir le réglage "Universal"</li>
     <li>Cliquer sur le bouton vert "Start".</li>
 </ul>';
+$string['event:clip_viewed'] = 'Clip affiché';
+$string['event:clip_viewed_desc'] = 'L\'utilisateur id \'{$a->userid}\' a affiché un clip dans l\'activité switchcast module id \'{$a->contextinstanceid}\'.';
+$string['event:member_invited'] = 'Membre invité';
+$string['event:member_invited_desc'] = 'L\'utilisateur id \'{$a->userid}\' a invité l\'utilisateur id \'{$a->relateduserid}\' a voir un clip dans l\'activité switchcast module id \'{$a->contextinstanceid}\'.';
+$string['event:member_revoked'] = 'Membre supprimé';
+$string['event:member_revoked_desc'] = 'L\'utilisateur id \'{$a->userid}\' a annulé l\'invitation à l\'utilisateur id \'{$a->relateduserid}\' a voir un clip dand l\'activité switchcast module id \'{$a->contextinstanceid}\'.';
+$string['event:clip_uploaded'] = 'Clip déposé';
+$string['event:clip_uploaded_desc'] = 'L\'utilisateur id \'{$a->userid}\' a déposé un clip dans l\'activité switchcast module id \'{$a->contextinstanceid}\'.';
+$string['event:clip_deleted'] = 'Clip supprimé';
+$string['event:clip_deleted_desc'] = 'L\'utilisateur id \'{$a->userid}\' a supprimé un clip dans l\'activité switchcast module id \'{$a->contextinstanceid}\'.';
+$string['event:clip_editdetails'] = 'Clip métadonnées modifiées';
+$string['event:clip_editdetails_desc'] = 'L\'utilisateur id \'{$a->userid}\' a modifié les métadonnées d\'un clip dans l\'activité switchcast module id \'{$a->contextinstanceid}\'.';
 
