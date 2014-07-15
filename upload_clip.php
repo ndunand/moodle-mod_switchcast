@@ -105,8 +105,8 @@ else if ($formdata = $mform->get_data()) {
 
         $filename = $file->get_filename();
         preg_match('/\.([^.]+)$/', $filename, $extension);
-        
-        if (!in_array($extension[1], scast_obj::getAllowedFileExtensions())) {
+
+        if (!in_array(strtolower($extension[1]), scast_obj::getAllowedFileExtensions())) {
             $file->delete();
             $a = new stdClass();
             $a->yours = $extension[1];

@@ -190,7 +190,7 @@ class scast_obj {
     public static function getAllowedFileExtensions() {
         $extensions = array();
         foreach(explode(',', self::getValueByKey('uploadfile_extensions')) as $extension) {
-            $extensions[] = trim($extension);
+            $extensions[] = strtolower(trim($extension));
         }
         return $extensions;
     }

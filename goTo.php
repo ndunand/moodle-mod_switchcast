@@ -33,6 +33,28 @@ $url_b64    = required_param('url', PARAM_RAW);
 $swid       = required_param('swid', PARAM_INT);
 $tk         = required_param('tk', PARAM_RAW);
 
+if (! $switchcast = $DB->get_record('switchcast', array('id' => $swid))) {
+    print_error('invalidcoursemodule');
+}
+
+if (! $course = $DB->get_record('course', array('id' => $switchcast->course))) {
+    print_error('coursemisconf');
+}
+
+$return_course = new moodle_url('/course/view.php', array('id' => $course->id));
+
+if (! $module = $DB->get_record('modules', array('name' => 'switchcast'))) {
+    print_error('invalidcoursemodule', null, $return_course);
+}
+
+if (! $cm = $DB->get_record('course_modules', array('course' => $course->id, 'module' => $module->id, 'instance' => $switchcast->id))) {
+    print_error('invalidcoursemodule', null, $return_course);
+}
+
+if (! $context = context_module::instance($cm->id)) {
+    print_error('badcontext', null, $return_course);
+}
+
 $url = base64_decode($url_b64);
 
 if ($tk == sha1( scast_obj::getValueByKey('default_sysaccount') . $swid . $url )) {

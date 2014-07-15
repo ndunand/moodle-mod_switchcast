@@ -58,7 +58,9 @@ function switchcast_add_instance($switchcast) {
     $scast->setLifetimeOfContentinMonth($switchcast->lifetime);
     $scast->setDepartment($switchcast->department);
     $scast->setAllowAnnotations($switchcast->annotations == SWITCHCAST_ANNOTATIONS);
-    $scast->setTemplateId($switchcast->template_id);
+    if (isset($switchcast->template_id)) { // not set if creating new instance with existing channel
+        $scast->setTemplateId($switchcast->template_id);
+    }
     $scast->setIvt($switchcast->is_ivt);
     if (isset($switchcast->inviting)) {
         $scast->setInvitingPossible($switchcast->inviting);
