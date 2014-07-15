@@ -114,27 +114,7 @@ if (    in_array($action, array('edit'))
         $event->add_record_snapshot('switchcast', $switchcast);
         $event->trigger();
     }
-/*
-    else if ($action === 'add' && $userid !== 0) {
-        $sc_user = new scast_user(null, $userid);
-        $newowner_aaiUniqueId = $sc_user->getExternalAccount();
-        if ($newowner_aaiUniqueId) {
-            $newowner = new scast_user($newowner_aaiUniqueId);
-            $sc_obj->registerUser($newowner);
-            $sc_clip->setOwner($newowner_aaiUniqueId);
-            $sc_clip->doUpdate();
-            add_to_log($course->id, 'switchcast', 'set clip owner', 'clip_editdetails.php?id='.$id.'&clip_id='.$clip_ext_id, $sc_clip->getOwner());
-        }
-        else {
-            print_error('owner_no_switch_account', 'switchcast', $url, $setuser->lastname.', '.$setuser->firstname);
-        }
-    }
-    else if ($action === 'remove') {
-        $sc_clip->setOwner('');
-        $sc_clip->doUpdate();
-        add_to_log($course->id, 'switchcast', 'remove clip owner', 'clip_editdetails.php?id='.$id.'&clip_id='.$clip_ext_id, $sc_clip->getOwner());
-    }
-*/
+
     redirect($url);
 }
 

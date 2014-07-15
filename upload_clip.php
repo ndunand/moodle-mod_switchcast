@@ -113,7 +113,7 @@ else if ($formdata = $mform->get_data()) {
             $a->allowed = implode(', ', scast_obj::getAllowedFileExtensions());
             print_error('fileis_notextensionallowed', 'switchcast', $url, $a);
         }
-        
+
         $filetoupload = $CFG->dataroot.'/temp/files/mod_switchcast_'.md5(microtime()).'.'.$extension[1];
         $a_file = $file->copy_content_to_temp();
         rename($a_file, $filetoupload);
