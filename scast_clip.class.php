@@ -103,14 +103,14 @@ class scast_clip {
 		$this->setRecordingDate((string) $simplexmlobj->issued_on);
 		$this->setSortableRecordingDate((string) $simplexmlobj->recording_date);
         $this->setRecordingStation((string) $simplexmlobj->ivt__recordingstation);
-        $this->setLinkMov($this->getUrlFor($simplexmlobj, 'QuickTime'));
-        $this->setLinkM4v($this->getUrlFor($simplexmlobj, 'iPod'));
+        $this->setLinkMov($this->getUrlFor($simplexmlobj, 'Desktop'));
+        $this->setLinkM4v($this->getUrlFor($simplexmlobj, 'Mobile'));
         $this->setCover($this->getUrlFor($simplexmlobj, 'Cover image'));
         $this->setAnnotationLink($this->getUrlFor($simplexmlobj, 'Annotate clip'));
 
         // BugFix IVT-Streaming
         // TODO : FIXME Sobald channel-templates neu gerechnet fixen
-        $this->setLinkFlash(str_replace('mp4', 'html', $this->getUrlFor($simplexmlobj, 'Flash')));
+        $this->setLinkFlash(str_replace('mp4', 'html', $this->getUrlFor($simplexmlobj, 'Streaming')));
 
 		$members = $DB->get_records('switchcast_cmember', array('clip_ext_id' => $this->getExtId()));
 		foreach ($members as $member) {
@@ -130,7 +130,7 @@ class scast_clip {
         global $CFG;
         foreach ($simplexmlobj->urls->url as $url) {
             if (((string) $url['label']) == $label) {
-                if (in_array($label, array('Flash', 'QuickTime', 'iPod', 'Annotate clip'))) {
+                if (in_array($label, array('Streaming', 'Desktop', 'Mobile', 'Annotate clip'))) {
                     $link  = $CFG->wwwroot . '/mod/switchcast/goTo.php';
                     $link .= '?url=' . base64_encode( (string)$url );
                     $link .= '&swid=' . $this->switchcast_id;
