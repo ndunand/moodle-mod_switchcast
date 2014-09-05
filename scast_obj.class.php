@@ -276,7 +276,7 @@ XML;
         global $CFG, $DB;
 
         $admin = get_admin();
-        $switchcasts = $DB->get_records('switchcast', array('userupload' => 1));
+        $switchcasts = $DB->get_records('switchcast');
         $pending = array();
         $uploaded = array();
 
@@ -301,6 +301,11 @@ XML;
         $DB->delete_records_select('switchcast_uploadedclip', 'status = '.SWITCHCAST_CLIP_UPLOADED.' AND timestamp < '.$staletime);
 
         foreach ($switchcasts as $switchcast) {
+        
+            $records = $DB->get_records('switchcast_uploadedclip', array('switchcastid' => $switchcast->id));
+            if (!$records) {
+                continue;
+            }
 
             $sc_obj = new scast_obj();
             try {
@@ -317,7 +322,6 @@ XML;
                 continue;
             }
 
-            $records = $DB->get_records('switchcast_uploadedclip', array('switchcastid' => $switchcast->id));
             foreach ($records as $uploaded_clip) {
                 $channel_clips = $sc_obj->getClips();
                 $ext_ids = array();
