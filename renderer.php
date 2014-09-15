@@ -457,7 +457,6 @@ class mod_switchcast_renderer extends plugin_renderer_base {
     function display_user_pending_clips($show_uploaded = true, $show_pending = true, $allusers = false, $with_uploader = false, $with_owner = true) {
         global $DB, $switchcast, $USER, $context;
 
-        scast_obj::processUploadedClips();
         $isproducer = has_capability('mod/switchcast:isproducer', $context);
 
         if ($allusers && $isproducer) {

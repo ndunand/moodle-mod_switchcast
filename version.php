@@ -32,5 +32,5 @@ $module->maturity   = MATURITY_STABLE;
 $module->release    = '1.4';
 
 $module->component  = 'mod_switchcast';     // Full name of the plugin (used for diagnostics)
-$module->cron       = 300;
+$module->cron       = 15*60;
 
