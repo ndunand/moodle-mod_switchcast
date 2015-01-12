@@ -38,6 +38,7 @@ $string['completionsubmit'] = 'Show as complete when user makes a choice';
 $string['displayhorizontal'] = 'Affichage horizontal';
 $string['displaymode'] = 'Mode d\'affichage';
 $string['displayvertical'] = 'Affichage vertical';
+$string['switchcast:downloadclip'] = 'Pouvoir télécharger des clips';
 $string['expired'] = 'Désolé, cette activité est fermée depuis {$a}; elle n\'est plus disponible.';
 $string['fillinatleastoneoption'] = 'Vous devez fournir au moins deux réponses possibles.';
 $string['full'] = 'Complet';

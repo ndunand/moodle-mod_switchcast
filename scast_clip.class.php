@@ -127,10 +127,16 @@ class scast_clip {
      * @return string the URL
      */
     private function getUrlFor(SimpleXMLElement $simplexmlobj,  $label = '') {
-        global $CFG;
+        global $CFG, $context;
         foreach ($simplexmlobj->urls->url as $url) {
             if (((string) $url['label']) == $label) {
                 if (in_array($label, array('Streaming', 'Desktop', 'Mobile', 'Annotate clip'))) {
+                    if (in_array($label, array('Desktop', 'Mobile'))) {
+                        // check that the user has the capability to download
+                        if (!has_capability('mod/switchcast:downloadclip', $context)) {
+                            return '#switchcast-inactive';
+                        }
+                    }
                     $link  = $CFG->wwwroot . '/mod/switchcast/goTo.php';
                     $link .= '?url=' . base64_encode( (string)$url );
                     $link .= '&swid=' . $this->switchcast_id;
