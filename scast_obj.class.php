@@ -564,7 +564,8 @@ XML;
 		$url .= '/users/' . $this->getSysAccount();
 		$url .= '/channels';
 		$url .= '/' . $this->getExtId();
-		$url .= '/clips.xml?conditions=';
+		$url .= '/clips.xml?full=true&amp;conditions='; // get full channel info,
+        // including all clips metadata, to avoid subsequent calls (1 per clip) to the API
 
 		$i = 0;
 
@@ -615,10 +616,17 @@ XML;
 	 * @return array
 	 */
 	public function checkAccess($clips = array()) {
+        global $allclips, $switchcast;
 		$newData = array();
         foreach ($clips as $clip) {
             // we have to instantiate a new scast_clip because $clip is a SimpleXMLElement
-            $clipobj = new scast_clip($this, (string)$clip->ext_id);
+            if (!isset($allclips[(string)$clip->ext_id])) {
+                $clipobj = new scast_clip($this, (string)$clip->ext_id, false, $switchcast->id);
+                $allclips[(string)$clip->ext_id] = $clipobj;
+            }
+            else {
+                $clipobj = $allclips[(string)$clip->ext_id];
+            }
             if ($clipobj->checkPermissionBool('read')) {
                 $newData[] = $clip;
             }

@@ -54,8 +54,17 @@ class scast_xml {
         $cache_dir = $CFG->dataroot.'/cache/mod_switchcast';
         if ($request_type !== 'GET') {
             // a modification has been made, clear the cache for consistency
-            scast_log::write("CACHE : destroying cache");
-            self::rmdirr($cache_dir);
+            $reason = $request_type . ' ' . $request_url;
+            $matches = false;
+            if (preg_match('/\/channels\/([0-9a-zA-Z]+)/', $request_url, $matches)) {
+                scast_log::write("CACHE : destroying cache for " . $matches[1] . " because " . $reason);
+                self::clear_cache($cache_dir, $matches[1]);
+            }
+            else {
+                // No need to destroy the cache, the requests not containning "/channel/xyzxyz" have no effect on clip/channel metadata
+//                scast_log::write("CACHE : destroying entire cache because " . $reason);
+//                self::clear_cache($cache_dir);
+            }
         }
         if (!file_exists($cache_dir)) {
             scast_log::write("CACHE : initializing empty cache");
@@ -69,7 +78,7 @@ class scast_xml {
         scast_log::write("REQUEST ". $request_type." ".$request_url);
         scast_log::write("INPUT ". $request_xml);
 
-        $cache_filename = $cache_dir.'/'.sha1("REQUEST ". $a_request." ".$a_url."INPUT ". $a_xml);
+        $cache_filename = $cache_dir.'/'. self::hashfilename($request_url);
 
         if (    $usecache
                 && (string)$request_type === 'GET'
@@ -78,7 +87,7 @@ class scast_xml {
                 && (time() - filemtime($cache_filename) < $cache_time)
             ) {
             // use the appropriate cached file
-            scast_log::write("CACHE : using cached file");
+            scast_log::write("CACHE : using cached file ".$cache_filename);
             $output = file_get_contents($cache_filename);
         }
         else {
@@ -106,7 +115,7 @@ class scast_xml {
                 curl_setopt($ch, CURLOPT_VERBOSE, (bool)scast_obj::getValueByKey('logging_enabled'));
             }
             else {
-                curl_setopt($ch, CURLOPT_TIMEOUT_MS, 10000);
+                curl_setopt($ch, CURLOPT_TIMEOUT_MS, (int)scast_obj::getValueByKey('curl_timeout')*1000);
             }
 
             curl_setopt($ch, CURLOPT_CAINFO, scast_obj::getValueByKey('cacrt_file'));
@@ -143,17 +152,29 @@ class scast_xml {
 
             curl_close($ch);
 
-            if ((string)$a_request === 'GET' && $cache_time && $cache_dir && is_writable($cache_dir)) {
+            if ($output && (string)$request_type === 'GET' && $cache_time && $cache_dir && is_writable($cache_dir)) {
                 // write cache to file
                 scast_log::write("CACHE : writing output to cache file ".$cache_filename);
                 $fh_w = fopen($cache_filename, 'w');
                 fwrite($fh_w, $output);
                 fclose($fh_w);
+                if (strstr($request_url, 'clips.xml?full=true') !== false) {
+                    // we're getting full clip matadata (woohoo!), so let's fill in the cache
+                    // on these clips, before making any further API calls.
+                    $channelfull = new SimpleXMLElement($output);
+                    foreach ($channelfull as $clipxml) {
+                        $clip_request_url = preg_replace('/^(.*)clips\.xml\?full=true.*/', '\1clips/'.$clipxml->ext_id.'.xml', $request_url);
+                        $cache_clip_filename = $cache_dir.'/'.  self::hashfilename($clip_request_url);
+                        $fh_w = fopen($cache_clip_filename, 'w');
+                        fwrite($fh_w, $clipxml->asXML());
+                        fclose($fh_w);
+                    }
+                }
             }
         }
 
 
-		if($as_xml) {
+		if($return_as_xml) {
 			return $output;
 		}
 
@@ -225,7 +246,7 @@ class scast_xml {
      * @param string $dirname
      * @return bool
      */
-    static function rmdirr($dirname) {
+    static function clear_cache($dirname, $filter = false) {
         if (!file_exists($dirname)) {
             return false;
         }
@@ -237,10 +258,28 @@ class scast_xml {
             if ($entry == '.' || $entry == '..') {
                 continue;
             }
-            self::rmdirr($dirname . DIRECTORY_SEPARATOR . $entry);
+            if ($filter !== false && strstr($entry, $filter) === false) {
+                continue;
+            }
+            unlink($dirname . DIRECTORY_SEPARATOR . $entry);
         }
         $dir->close();
-        return rmdir($dirname);
+        return true;
     }
+
+
+    /**
+     *
+     */
+    static function hashfilename($url = '') {
+        $f = str_replace(scast_obj::getValueByKey('switch_api_host'), '', $url);
+        $f = str_replace(scast_obj::getValueByKey('default_sysaccount'), '', $f);
+        $f = preg_replace('/[^a-zA-Z0-9]/', '_', $f);
+        $f = preg_replace('/^(_)+/', '', $f);
+//        return sha1($f);
+        return $f;
+    }
+
+
 }
 

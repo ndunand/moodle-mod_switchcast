@@ -86,6 +86,7 @@ $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('switchcast', $switchcast);
 $event->trigger();
 
+$allclips = array();
 
 echo $OUTPUT->header();
 

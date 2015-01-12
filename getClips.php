@@ -102,8 +102,16 @@ if (scast_obj::getValueByKey('display_select_columns')) {
 }
 
 $clip_objs = array();
+
 foreach ($clips as $clip) {
-    $scast_clip = new scast_clip($sc_obj, $clip['ext_id'], false, $switchcast->id);
+
+    if (!isset($allclips[$clip['ext_id']])) {
+        $scast_clip = new scast_clip($sc_obj, $clip['ext_id'], false, $switchcast->id);
+        $allclips[$clip['ext_id']] = $scast_clip;
+    }
+    else {
+        $scast_clip = $allclips[$clip['ext_id']];
+    }
     $title = $scast_clip->getTitle();
     if ($title == '') {
         $scast_clip->setTitle(get_string('untitled_clip', 'switchcast'));
@@ -149,14 +157,22 @@ foreach ($clips as $clip) {
 if (scast_obj::getValueByKey('display_select_columns')) {
     $all_clip_objs = array();
     foreach ($all_clips as $clip) {
-        $scast_clip = new scast_clip($sc_obj, $clip['ext_id'], false, $switchcast->id);
-        $scast_clip->editdetails_page = '#switchcast-inactive';
-        $scast_clip->deleteclip_page = '#switchcast-inactive';
-        $scast_clip->clipmembers_page = '#switchcast-inactive';
-        if (has_capability('mod/switchcast:isproducer', $context)) {
-            // current USER is channel producer in Moodle (i.e. Teacher)
-            if ($sc_obj->getIvt()) {
-                $scast_clip->editdetails_page = '#some-page';
+
+        if (!isset($allclips[$clip['ext_id']])) {
+
+            $scast_clip = new scast_clip($sc_obj, $clip['ext_id'], false, $switchcast->id);
+            $scast_clip->editdetails_page = '#switchcast-inactive';
+            $scast_clip->deleteclip_page = '#switchcast-inactive';
+            $scast_clip->clipmembers_page = '#switchcast-inactive';
+            if (has_capability('mod/switchcast:isproducer', $context)) {
+                // current USER is channel producer in Moodle (i.e. Teacher)
+                if ($sc_obj->getIvt()) {
+                    $scast_clip->editdetails_page = '#some-page';
+                }
+                if ($sc_obj->isProducer($sc_user->getExternalAccount())) {
+                    // current user is actual SwitchCast producer
+                    $scast_clip->deleteclip_page = '#some-page';
+                }
             }
             if ($scast_clip->getOwnerUserId() == $USER->id) {
                 // current USER is clip owner
@@ -178,7 +194,7 @@ if (scast_obj::getValueByKey('display_select_columns')) {
         }
 
         else {
-            $scast_clip->owner_name = 'SOME_NAME';
+            $scast_clip = $allclips[$clip['ext_id']];
         }
 
         $all_clip_objs[] = $scast_clip;

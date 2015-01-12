@@ -62,7 +62,8 @@ class mod_switchcast_renderer extends plugin_renderer_base {
      */
     function display_channel_content() {
 
-        global $context, $PAGE;
+        global $context, $PAGE, $allclips;
+
         $PAGE->requires->js('/mod/switchcast/js/pure.js');
         $PAGE->requires->js('/mod/switchcast/js/get_clips.js');
 
@@ -113,7 +114,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
             echo html_writer::tag('th', get_string('actions', 'switchcast'), array('class' => 'switchcast-actions'));
             echo html_writer::end_tag('tr');
             foreach($this->clips as $clip) {
-                $sc_clip = new scast_clip($this->scobj, (string)$clip->ext_id);
+                $sc_clip = $allclips[(string)$clip->ext_id];
                 $this->display_clip_outline($sc_clip, true, true, 'all', $this->scobj->getIvt());
                 break;
                 // NOTE ND : we display only one row, that we'll use as a template

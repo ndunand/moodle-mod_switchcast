@@ -94,7 +94,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('switchcast/xml_cache_time',
             get_string('xml_cache_time', 'switchcast'),
             get_string('xml_cache_time_desc', 'switchcast'),
-            '60', PARAM_INT));
+            '1200', PARAM_INT));
 
     $settings->add(new admin_setting_configcheckbox('switchcast/logging_enabled',
             get_string('logging_enabled', 'switchcast'),
@@ -166,6 +166,11 @@ if ($ADMIN->fulltree) {
             get_string('curl_proxy', 'switchcast'),
             get_string('curl_proxy_desc', 'switchcast'),
             '', PARAM_URL, 50));
+
+    $settings->add(new admin_setting_configtext('switchcast/curl_timeout',
+            get_string('curl_timeout', 'switchcast'),
+            get_string('curl_timeout_desc', 'switchcast'),
+            '50', PARAM_INT));
 
 }
 
