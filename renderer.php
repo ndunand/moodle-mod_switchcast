@@ -268,8 +268,9 @@ class mod_switchcast_renderer extends plugin_renderer_base {
      * @param bool $with_owner display owner column
      * @param bool $with_uploader display uploader column
      * @param bool $with_recordingstation
+     * @param bool $with_playbuttons
      */
-    function display_clip_outline(scast_clip $sc_clip, $with_actions = true, $is_template = false, $allowed_actions = 'all', $with_owner = false, $with_uploader = false, $with_recordingstation = true) {
+    function display_clip_outline(scast_clip $sc_clip, $with_actions = true, $is_template = false, $allowed_actions = 'all', $with_owner = false, $with_uploader = false, $with_recordingstation = true, $with_playbuttons = true) {
         global $CFG, $DB, $cm;
 
         $title = $sc_clip->getTitle();
@@ -316,20 +317,22 @@ class mod_switchcast_renderer extends plugin_renderer_base {
         echo html_writer::start_tag('div', array('class' => 'cliplabel', 'title' => $subtitle));
         echo html_writer::empty_tag('img', array('src' => $sc_clip->getCover()));
         echo html_writer::tag('h3', $title);
-        echo html_writer::start_tag('div', array('class' => 'linkbar'));
-//        echo html_writer::tag('span', $sc_clip->getLinkBox());
-        if ($is_template) {
-            echo html_writer::tag('a', '', array('href' => '#switchcast-inactive', 'title' => get_string('annotations', 'switchcast'), 'class' => 'annotate', 'target' => '_blank'));
+        if ($with_playbuttons) {
+            echo html_writer::start_tag('div', array('class' => 'linkbar'));
+//            echo html_writer::tag('span', $sc_clip->getLinkBox());
+            if ($is_template) {
+                echo html_writer::tag('a', '', array('href' => '#switchcast-inactive', 'title' => get_string('annotations', 'switchcast'), 'class' => 'annotate', 'target' => '_blank'));
+            }
+            else if ($this->scobj->getAllowAnnotations()) {
+                echo html_writer::tag('a', '', array('href' => $sc_clip->getAnnotationLink(), 'title' => get_string('annotations', 'switchcast'), 'class' => 'annotate', 'target' => '_blank'));
+            }
+            echo html_writer::tag('a', '', array('href' => $sc_clip->getLinkFlash(), 'title' => get_string('flash', 'switchcast'), 'class' => 'flash', 'target' => '_blank'));
+    //        echo html_writer::tag('span', $sc_clip->getLinkMp4());
+            echo html_writer::tag('a', '', array('href' =>$sc_clip->getLinkMov(), 'title' => get_string('mov', 'switchcast'), 'class' => 'mov', 'target' => '_blank'));
+            echo html_writer::tag('a', '', array('href' => $sc_clip->getLinkM4v(), 'title' => get_string('m4v', 'switchcast'), 'class' => 'm4v', 'target' => '_blank'));
+    //        echo html_writer::tag('span', $sc_clip->getSubtitle());
+            echo html_writer::end_tag('div');
         }
-        else if ($this->scobj->getAllowAnnotations()) {
-            echo html_writer::tag('a', '', array('href' => $sc_clip->getAnnotationLink(), 'title' => get_string('annotations', 'switchcast'), 'class' => 'annotate', 'target' => '_blank'));
-        }
-        echo html_writer::tag('a', '', array('href' => $sc_clip->getLinkFlash(), 'title' => get_string('flash', 'switchcast'), 'class' => 'flash', 'target' => '_blank'));
-//        echo html_writer::tag('span', $sc_clip->getLinkMp4());
-        echo html_writer::tag('a', '', array('href' =>$sc_clip->getLinkMov(), 'title' => get_string('mov', 'switchcast'), 'class' => 'mov', 'target' => '_blank'));
-        echo html_writer::tag('a', '', array('href' => $sc_clip->getLinkM4v(), 'title' => get_string('m4v', 'switchcast'), 'class' => 'm4v', 'target' => '_blank'));
-//        echo html_writer::tag('span', $sc_clip->getSubtitle());
-        echo html_writer::end_tag('div');
         echo html_writer::end_tag('div');
         echo html_writer::end_tag('td');
 
@@ -493,7 +496,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
             $this->display_singleclip_table_header(false, $with_owner, $with_uploader, false);
             foreach ($uploaded as $uploaded_record) {
                 $sc_clip = new scast_clip($sc_obj, $uploaded_record->ext_id);
-                $this->display_clip_outline($sc_clip, false, false, null, $with_owner, $with_uploader, false);
+                $this->display_clip_outline($sc_clip, false, false, null, $with_owner, $with_uploader, false, false);
             }
             echo html_writer::end_tag('table');
         }
@@ -512,7 +515,7 @@ class mod_switchcast_renderer extends plugin_renderer_base {
                     }
                     continue;
                 }
-                $this->display_clip_outline($sc_clip, false, false, null, $with_owner, $with_uploader, false);
+                $this->display_clip_outline($sc_clip, false, false, null, $with_owner, $with_uploader, false, false);
             }
             echo html_writer::end_tag('table');
         }

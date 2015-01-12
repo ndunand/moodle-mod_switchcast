@@ -38,21 +38,21 @@ class scast_xml {
     /**
      * Sends an XMP API request to the SwitchCast server
      *
-     * @param string $a_url the API call URL
-     * @param string $a_request request type
-     * @param SimpleXMLElement $a_xml input XML
-     * @param boolean $as_xml return raw XML?
+     * @param string $request_url the API call URL
+     * @param string $request_type request type
+     * @param SimpleXMLElement $request_xml input XML
+     * @param boolean $return_as_xml return raw XML?
      * @param boolean $usecache try to use cache?
      * @param string $a_file video file to upload
      * @return boolean|\SimpleXMLElement result or false if error
      */
-	static function sendRequest($a_url, $a_request, $a_xml = NULL, $as_xml = false, $usecache = true, $a_file = NULL) {
+	static function sendRequest($request_url, $request_type, $request_xml = NULL, $return_as_xml = false, $usecache = true, $a_file = NULL) {
 
         global $CFG;
 
         $cache_time = scast_obj::getValueByKey('xml_cache_time');
         $cache_dir = $CFG->dataroot.'/cache/mod_switchcast';
-        if ($a_request !== 'GET') {
+        if ($request_type !== 'GET') {
             // a modification has been made, clear the cache for consistency
             scast_log::write("CACHE : destroying cache");
             self::rmdirr($cache_dir);
@@ -62,17 +62,17 @@ class scast_xml {
             mkdir($cache_dir);
         }
 
-		if (is_array($a_xml)) {
-			$a_xml = self::arrayToXML($a_xml['root'], $a_xml['data']);
+		if (is_array($request_xml)) {
+			$request_xml = self::arrayToXML($request_xml['root'], $request_xml['data']);
 		}
 
-        scast_log::write("REQUEST ". $a_request." ".$a_url);
-        scast_log::write("INPUT ". $a_xml);
+        scast_log::write("REQUEST ". $request_type." ".$request_url);
+        scast_log::write("INPUT ". $request_xml);
 
         $cache_filename = $cache_dir.'/'.sha1("REQUEST ". $a_request." ".$a_url."INPUT ". $a_xml);
 
         if (    $usecache
-                && (string)$a_request === 'GET'
+                && (string)$request_type === 'GET'
                 && $cache_time && $cache_dir
                 && file_exists($cache_filename)
                 && (time() - filemtime($cache_filename) < $cache_time)
@@ -116,16 +116,16 @@ class scast_xml {
             if(scast_obj::getValueByKey('castkey_password')) {
                 curl_setopt($ch, CURLOPT_SSLKEYPASSWD, scast_obj::getValueByKey('castkey_password'));
             }
-            curl_setopt($ch, CURLOPT_URL, $a_url);
+            curl_setopt($ch, CURLOPT_URL, $request_url);
             if(scast_obj::getValueByKey('curl_proxy')) {
                 curl_setopt($ch, CURLOPT_PROXY, scast_obj::getValueByKey('curl_proxy'));
             }
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             if (!$a_file) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $a_xml);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $request_xml);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: text/xml"));
             }
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $a_request);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $request_type);
 
             $output = curl_exec($ch);
             $curl_errno = curl_errno($ch); // 0 if fine
@@ -173,14 +173,14 @@ class scast_xml {
         catch (Exception $e) {
             $sxe = simplexml_load_string($output);
             if ($sxe === false) {
-                header("Content-type: text/plain");
+//                header("Content-type: text/plain");
                 $sxe = "Failed loading XML\n";
                 foreach(libxml_get_errors() as $error) {
                     $sxe .= "\t".$error->message;
                 }
                 $sxe .= "\n\n";
                 $sxe .= $output;
-                echo $sxe;
+//                echo $sxe;
             }
             print_error('xml_fail', 'switchcast', null, $e->getMessage() . $e->getCode());
 			return false;

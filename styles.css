@@ -214,9 +214,14 @@
     background-image: url([[pix:mod_switchcast|annotate]]);
 }
 
+.path-mod-switchcast .notify {
+    margin: 1em 0;
+    color: #c00;
+}
+
 .path-mod-switchcast .switchcast-notice {
     clear: right;
-    float:right;
+    float: right;
     padding: 3px 5px;
     margin: 3px;
     color: #c00;

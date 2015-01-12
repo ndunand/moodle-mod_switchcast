@@ -69,6 +69,8 @@ if (! $context = context_module::instance($cm->id)) {
     print_error('badcontext', null, $return_course);
 }
 
+$allclips = array();
+
 $sc_obj = new scast_obj();
 $sc_obj->doRead($switchcast->id, true);
 
@@ -139,8 +141,10 @@ foreach ($clips as $clip) {
 //        // hack because if present it will fill our template
 //        unset($scast_clip->AnnotationLink);
 //    }
+
     $clip_objs[] = $scast_clip;
 }
+
 
 if (scast_obj::getValueByKey('display_select_columns')) {
     $all_clip_objs = array();
@@ -154,25 +158,29 @@ if (scast_obj::getValueByKey('display_select_columns')) {
             if ($sc_obj->getIvt()) {
                 $scast_clip->editdetails_page = '#some-page';
             }
-            if ($sc_obj->isProducer($sc_user->getExternalAccount())) {
-                // current user is actual SwitchCast producer
-                $scast_clip->deleteclip_page = '#some-page';
+            if ($scast_clip->getOwnerUserId() == $USER->id) {
+                // current USER is clip owner
+                if ($sc_obj->getIvt() && $sc_obj->getInvitingPossible()) {
+                    $scast_clip->clipmembers_page = '#some-page';
+                }
             }
-        }
-        if ($scast_clip->getOwnerUserId() == $USER->id) {
-            // current USER is clip owner
-            if ($sc_obj->getIvt() && $sc_obj->getInvitingPossible()) {
-                $scast_clip->clipmembers_page = '#some-page';
+            $owner = $scast_clip->getOwner();
+            unset($scast_clip->owner); // we don't want SWITCHaai uniqueID to appear in the JSON output
+            if ($owner == '') {
+                $scast_clip->owner_name = '';
             }
+            else {
+                $scast_clip->owner_name = 'SOME_NAME';
+            }
+
+            $allclips[$clip['ext_id']] = $scast_clip;
+
         }
-        $owner = $scast_clip->getOwner();
-        unset($scast_clip->owner); // we don't want SWITCHaai uniqueID to appear in the JSON
-        if ($owner == '') {
-            $scast_clip->owner_name = '';
-        }
+
         else {
             $scast_clip->owner_name = 'SOME_NAME';
         }
+
         $all_clip_objs[] = $scast_clip;
     }
 }
@@ -187,7 +195,7 @@ $visible_clips = array_slice($clip_objs, $offset, $length);
 
 $json = array(
     'count' => count($clip_objs),
-    'clips' => $visible_clips
+    'clips' => $visible_clips,
 );
 
 if (scast_obj::getValueByKey('display_select_columns')) {

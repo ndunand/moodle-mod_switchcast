@@ -272,4 +272,7 @@ $string['event:clip_deleted'] = 'Clip supprimé';
 $string['event:clip_deleted_desc'] = 'L\'utilisateur id \'{$a->userid}\' a supprimé un clip dans l\'activité switchcast module id \'{$a->contextinstanceid}\'.';
 $string['event:clip_editdetails'] = 'Clip métadonnées modifiées';
 $string['event:clip_editdetails_desc'] = 'L\'utilisateur id \'{$a->userid}\' a modifié les métadonnées d\'un clip dans l\'activité switchcast module id \'{$a->contextinstanceid}\'.';
+$string['set_clip_details_warning'] = 'Attention : la modification de ces détails n\'affecte pas les éventuels titres et autres métadonnées présents dans la vidéo elle-même, car ces éléments sont encodés dans la vidéo lors de son dépôt initial.';
+$string['curl_timeout'] = 'Timeout cURL';
+$string['curl_timeout_desc'] = 'Combien de temps attendre une réponse du serveur API SWITCHcast, en secondes. Augmentez cette value si vous avez des activités contenant beaucoup de clips et que le serveur SWITCHcast peine à répondre dans les temps.';
 

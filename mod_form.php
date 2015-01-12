@@ -241,11 +241,13 @@ class mod_switchcast_mod_form extends moodleform_mod {
                 $mform->removeElement('ext_id');
                 $mform->removeElement('channeltype');
                 $mform->removeElement('channelnew');
+                $mform->removeElement('userupload');
+                $mform->removeElement('userupload_maxfilesize');
                 $mform->addElement('html', get_string('channeldoesnotbelong', 'switchcast', $this->current->organization_domain));
             }
         }
 
-        // What if the channel does not exist any more?
+        // What if the channel does not exist any more? -> remove all channel manipulation options and display a notice
         if (  !empty($this->_instance) && scast_obj::getOrganizationByEmail($scuser->getExternalAccount()) == $this->current->organization_domain && !isset($channels[$this->current->ext_id]) ) {
             $mform->removeElement('inviting');
             $mform->removeElement('is_ivt');
@@ -259,7 +261,9 @@ class mod_switchcast_mod_form extends moodleform_mod {
             $mform->removeElement('ext_id');
             $mform->removeElement('channeltype');
             $mform->removeElement('channelnew');
-            $mform->addElement('html', get_string('channel_not_found', 'switchcast'));
+            $mform->removeElement('userupload');
+            $mform->removeElement('userupload_maxfilesize');
+            $mform->addElement('html', html_writer::tag('p', get_string('channel_not_found', 'switchcast'), array('class' => 'notify')));
         }
 
         $this->standard_coursemodule_elements();

@@ -167,7 +167,7 @@ class scast_obj {
             20*1024*1024  => '20 '.$sizemb,
             50*1024*1024  => '50 '.$sizemb,
             100*1024*1024 => '100 '.$sizemb,
-            200*1024*1024 => '200 '.$sizemb,
+            250*1024*1024 => '250 '.$sizemb,
             500*1024*1024 => '500 '.$sizemb,
         );
         if ($enforceglobalmax) {
@@ -301,7 +301,7 @@ XML;
         $DB->delete_records_select('switchcast_uploadedclip', 'status = '.SWITCHCAST_CLIP_UPLOADED.' AND timestamp < '.$staletime);
 
         foreach ($switchcasts as $switchcast) {
-        
+
             $records = $DB->get_records('switchcast_uploadedclip', array('switchcastid' => $switchcast->id));
             if (!$records) {
                 continue;

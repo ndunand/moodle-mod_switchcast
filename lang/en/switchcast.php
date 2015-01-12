@@ -193,7 +193,7 @@ $string['recordingstation'] = 'Recording station';
 $string['withoutowner'] = 'Without owner';
 $string['notavailable'] = 'Sorry, this activity type is for testing only and is not available yet.';
 $string['xml_cache_time'] = 'XML cache lifetime';
-$string['xml_cache_time_desc'] = 'How long, in seconds, should the XML responses from the SwitchCast server be kept in cache? Zero value means no caching.';
+$string['xml_cache_time_desc'] = 'How long, in seconds, should the XML responses from the SwitchCast server be kept in cache? A zero value means no caching.';
 $string['removeowner'] = 'Remove owner';
 $string['channel_not_found'] = 'The linked channel does not exist (anymore?)';
 $string['channeldoesnotbelong'] = 'The linked channel belongs to another organization ({$a}); therefore, you cannot modify it. Only a teacher from {$a} can modify it.';
@@ -272,4 +272,7 @@ $string['upload_clip_misc_help'] = 'To ensure your file is accepted by the syste
     <li>Chose the "Universal" setting</li>
     <li>Click the green "Start" button.</li>
 </ul>';
+$string['set_clip_details_warning'] = 'Warning: changing clip details here does not affect titles and other metadata possibly appearing in the clip itstelf, as these are hard-coded into the video when the video file was first uploaded.';
+$string['curl_timeout'] = 'cURL timeout';
+$string['curl_timeout_desc'] = 'How long to wait for an answer from the SWITCHcast API server for, in seconds. Increase this value if you have channels with lots of clips and the SWITCHcast server fails to respond timely.';
 
