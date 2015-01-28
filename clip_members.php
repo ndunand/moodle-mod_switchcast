@@ -48,6 +48,10 @@ if (! $cm = get_coursemodule_from_id('switchcast', $id)) {
     print_error('invalidcoursemodule');
 }
 
+if (! $context = context_module::instance($cm->id)) {
+    print_error('badcontext', null, $return_course);
+}
+
 if (! $course = $DB->get_record('course', array('id' => $cm->course))) {
     print_error('coursemisconf');
 }
@@ -71,10 +75,6 @@ if (!$switchcast = switchcast_get_switchcast($cm->instance)) {
 $sc_obj  = new scast_obj();
 $sc_obj->doRead($switchcast->id);
 $sc_clip = new scast_clip($sc_obj, $clip_ext_id, false, $switchcast->id);
-
-if (! $context = context_module::instance($cm->id)) {
-    print_error('badcontext', null, $return_course);
-}
 
 if ( $sc_clip->getOwnerUserId() != $USER->id ) {
     print_error('invalidaction', null, $return_channel);
