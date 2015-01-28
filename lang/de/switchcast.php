@@ -38,6 +38,7 @@ $string['completionsubmit'] = 'Als vervollständigt anzeigen, wenn der/die Nutze
 $string['displayhorizontal'] = 'Horizontale Anzeige';
 $string['displaymode'] = 'Anzeigemodus';
 $string['displayvertical'] = 'Vertikale Anzeige';
+$string['switchcast:downloadclip'] = 'Clips können heruntergeladen werden.';
 $string['expired'] = 'Diese Aktivität wurde am {$a} beendet und steht nicht mehr länger zur Verfügung';
 $string['fillinatleastoneoption'] = 'Bitte erfassen Sie mindestens zwei mögliche Antworten.';
 $string['full'] = '(Voll)';
@@ -272,3 +273,7 @@ $string['upload_clip_misc_help'] = 'Bitte verwenden Sie die empfohlenen Videofor
 <li>Wählen Sie die "Universal"-Einstellung</li>
 <li>Wählen Sie den grünen Startknopf.</li>
 </ul>';
+$string['set_clip_details_warning'] = 'Warnung: Wenn Sie hier die Details des Clips ändern, werden  Titel und andere Metadaten, welche direkt innerhalb des Clips erscheinen, nicht geändert, da sie beim erstmaligen Upload direkt in die Clips hart-codiert werden.';
+$string['curl_timeout'] = 'cURL Timeout';
+$string['curl_timeout_desc'] = 'Zeit in Sekunden, um auf eine Antwort des SWITCHcast API-Servers zu warten. Vergrössern Sie diesen Wert, wenn Sie Kanäle mit einer grossen Anzahl von Videos haben und der SWITCHcast-Server nicht rechtzeitig antwortet.';
+
