@@ -1,7 +1,12 @@
 
+# Licensing information:
+
+http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
+
 # Prerequisites:
 
- - Moodle version 2.7
+ - Moodle version 2.7+
  - for the full feature set, the SWITCHaai UniqueID of your users must be available as a Moodle user profile field
  - PHP with CURL module supporting HTTPS protobol
  - PHP with SimpleXML module
@@ -66,4 +71,9 @@ Last, proceed to the module settings (via Site administration -> Plugins -> Acti
  - Server key file password: a password to unlock the above key file if needed
 
  - curl proxy: proxy server to be used by CURL (leave empty if none)
+
+
+# Screen Shot
+
+![image](https://raw.githubusercontent.com/ndunand/moodle-mod_switchcast/master/screenshot.png)
 
