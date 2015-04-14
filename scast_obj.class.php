@@ -347,6 +347,7 @@ XML;
                     if ($user !== false) {
                         $a = new stdClass();
                         $a->filename = $uploaded_clip->filename;
+                        $a->cliptitle = $uploaded_clip->title;
                         $cm = get_coursemodule_from_instance('switchcast', $switchcast->id);
                         $a->link = $CFG->wwwroot.'/mod/switchcast/view.php?id='.$cm->id;
                         email_to_user($user, $admin, get_string('clipready_subject', 'switchcast'), get_string('clipready_body', 'switchcast', $a));

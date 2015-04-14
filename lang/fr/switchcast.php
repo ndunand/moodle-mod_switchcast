@@ -217,7 +217,7 @@ $string['mypendingclips'] = 'Vous avez {$a} clips en cours de traitement dans ce
 $string['uploadedclips'] = '{$a} clips ont été ajoutés à ce canal';
 $string['myuploadedclips'] = 'Vous avez ajouté {$a} clips à ce canal';
 $string['clipready_subject'] = 'Votre nouveau clip est prêt';
-$string['clipready_body'] = 'Le clip "{$a->filename}" est prêt, vous le trouverez dans l\'activité Moodle suivante :
+$string['clipready_body'] = 'Le clip "{$a->cliptitle}" ({$a->filename}) est prêt, vous le trouverez dans l\'activité Moodle suivante :
 
 {$a->link}
 ';
@@ -227,7 +227,7 @@ $string['clipstale_body'] = 'Le clip "{$a->filename}" n\'a pas pu être converti
 
 {$a->link}
 ';
-$string['clipstale_body'] = 'Le clip "{$a->filename}" n\'a pas pu être converti correctement.
+$string['clipstale_body_admin'] = 'Le clip "{$a->filename}" n\'a pas pu être converti correctement.
 
     Activité: {$a->link}
     Utilisateur: {$a->userfullname} {$a->userlink}

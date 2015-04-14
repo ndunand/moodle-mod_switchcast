@@ -217,7 +217,7 @@ $string['mypendingclips'] = 'You have {$a} clips being processed in this channel
 $string['uploadedclips'] = '{$a} clips have been uploaded to this channel';
 $string['myuploadedclips'] = 'You have uploaded {$a} clips into this channel';
 $string['clipready_subject'] = 'Your new clip is ready';
-$string['clipready_body'] = 'Your uploaded clip "{$a->filename}" is ready, you may find it in the following Moodle activity:
+$string['clipready_body'] = 'Your uploaded clip "{$a->cliptitle}" ({$a->filename}) is ready, you may find it in the following Moodle activity:
 
 {$a->link}
 ';

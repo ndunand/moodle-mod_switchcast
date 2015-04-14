@@ -217,7 +217,7 @@ $string['mypendingclips'] = 'Es werden zur Zeit {$a} Videoclips von Ihnen in die
 $string['uploadedclips'] = '{$a} Videoclips wurden in diesem Kanal hochgeladen';
 $string['myuploadedclips'] = 'Sie haben {$a} Videoclips in diesem Kanal hochgeladen';
 $string['clipready_subject'] = 'Ihr Videoclip ist bereit';
-$string['clipready_body'] = 'Ihr hochgeladener Videoclip "{$a->filename}" ist bereit. Sie finden ihn in der folgenden Moodle-Aktivität:
+$string['clipready_body'] = 'Ihr hochgeladener Videoclip "{$a->cliptitle}" ({$a->filename}) ist bereit. Sie finden ihn in der folgenden Moodle-Aktivität:
 	
 {$a->link}
 ';
