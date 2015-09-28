@@ -108,7 +108,7 @@
                     // let's figure which columns to display
                     for (var i = 0; i < data.allclips.length; i++) {
                         theclip = data.allclips[i];
-                        if (theclip.owner_name.length) {
+                        if (theclip.owner_name && theclip.owner_name.length) {
                             show_owner = true;
                         }
                         if (theclip.recordingstation.length) {
