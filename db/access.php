@@ -19,77 +19,46 @@
  *
  * @package    mod
  * @subpackage switchcast
- * @copyright  2013 Université de Lausanne
+ * @copyright  2013-2015 Université de Lausanne
  * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
+$capabilities = [
 
-    'mod/switchcast:use' => array(
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
-            'student' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW
-        )
-    ),
+        'mod/switchcast:use'          => [
+                'captype' => 'read', 'contextlevel' => CONTEXT_MODULE, 'archetypes' => [
+                        'student' => CAP_ALLOW, 'teacher' => CAP_ALLOW, 'editingteacher' => CAP_ALLOW
+                ]
+        ],
 
-    'mod/switchcast:seeallclips' => array(
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW
-        )
-    ),
+        'mod/switchcast:seeallclips'  => [
+                'captype'    => 'read', 'contextlevel' => CONTEXT_MODULE,
+                'archetypes' => ['teacher' => CAP_ALLOW, 'editingteacher' => CAP_ALLOW]
+        ],
 
-    'mod/switchcast:addinstance' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
+        'mod/switchcast:addinstance'  => [
+                'riskbitmask' => RISK_SPAM, 'captype' => 'write', 'contextlevel' => CONTEXT_MODULE,
+                'archetypes'  => ['editingteacher' => CAP_ALLOW, 'manager' => CAP_ALLOW]
+        ],
 
+        'mod/switchcast:isproducer'   => [
+                'riskbitmask' => RISK_SPAM, 'captype' => 'write', 'contextlevel' => CONTEXT_MODULE,
+                'archetypes'  => ['editingteacher' => CAP_ALLOW, 'manager' => CAP_ALLOW]
+        ],
 
-    'mod/switchcast:isproducer' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
+        'mod/switchcast:uploadclip'   => [
+                'riskbitmask' => RISK_SPAM, 'captype' => 'write', 'contextlevel' => CONTEXT_MODULE, 'archetypes' => [
+                        'student' => CAP_ALLOW, 'teacher' => CAP_ALLOW, 'editingteacher' => CAP_ALLOW
+                ]
+        ],
 
+        'mod/switchcast:downloadclip' => [
+                'captype' => 'write', 'contextlevel' => CONTEXT_MODULE, 'archetypes' => [
+                        'student' => CAP_ALLOW, 'teacher' => CAP_ALLOW, 'editingteacher' => CAP_ALLOW
+                ]
+        ]
 
-    'mod/switchcast:uploadclip' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
-            'student' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW
-        )
-    ),
-
-
-    'mod/switchcast:downloadclip' => array(
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
-            'student' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW
-        )
-    )
-
-);
+];

@@ -19,7 +19,7 @@
  *
  * @package    mod
  * @subpackage switchcast
- * @copyright  2013 Université de Lausanne
+ * @copyright  2013-2015 Université de Lausanne
  * @author     Nicolas.Dunand@unil.ch
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -37,7 +37,7 @@ class restore_switchcast_activity_structure_step extends restore_activity_struct
 
     protected function define_structure() {
 
-        $paths = array();
+        $paths = [];
 
         $paths[] = new restore_path_element('switchcast', '/activity/switchcast');
 

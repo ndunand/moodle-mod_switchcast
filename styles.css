@@ -266,6 +266,7 @@
     background-color: #f3f3f3;
     margin: 0 0 10px 0;
 }
+
 .path-mod-switchcast .switchcast-filters > div, .path-mod-switchcast .switchcast-pagination > div {
     margin: 3px 0;
 }
@@ -332,6 +333,7 @@
     font-weight: normal;
     font-size: 9px;
 }
+
 #page-mod-switchcast-clip_editdetails form.border {
     width: 100%;
     padding-bottom: 10px;

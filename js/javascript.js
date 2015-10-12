@@ -25,19 +25,20 @@
 
 var modswitchcast_tbldsplaypar = {};
 
-(function($){
+(function ($) {
 
-    $(document).ready(function(){
+    $(document).ready(function () {
 
         // filter section toggle
-        $('a.switchcast-filters-toggle').click(function(){
+        $('a.switchcast-filters-toggle').click(function () {
             $(this).toggleClass('expanded');
             $('div.switchcast-filters').slideToggle();
             return false;
         });
 
         // show subtitles checkbox
-        $('div#region-main').on('change', '#clip-show-subtitle', function(){
+        $('div#page').on('change', '#clip-show-subtitle', function () {
+            console.log('clicked!');
             var $subtitles = $('table.switchcast-clips div.cliplabel h3 div.subtitle'),
                 table_params = $.toJSON;
             if ($(this).prop('checked')) {
@@ -50,7 +51,7 @@ var modswitchcast_tbldsplaypar = {};
         });
 
         // deferred event listener for sort links
-        $('div#region-main').on('click', '.switchcast-sortable a', function(){
+        $('div#page').on('click', '.switchcast-sortable a', function () {
             var a = $(this),
                 newclass;
 

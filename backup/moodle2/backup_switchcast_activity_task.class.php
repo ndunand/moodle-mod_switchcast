@@ -19,7 +19,7 @@
  *
  * @package    mod
  * @subpackage switchcast
- * @copyright  2013 Université de Lausanne
+ * @copyright  2013-2015 Université de Lausanne
  * @author     Nicolas.Dunand@unil.ch
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -57,15 +57,15 @@ class backup_switchcast_activity_task extends backup_activity_task {
     static public function encode_content_links($content) {
         global $CFG;
 
-        $base = preg_quote($CFG->wwwroot,"/");
+        $base = preg_quote($CFG->wwwroot, "/");
 
         // Link to the list of switchcasts
-        $search="/(".$base."\/mod\/switchcast\/index.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@SWITCHCASTINDEX*$2@$', $content);
+        $search = "/(" . $base . "\/mod\/switchcast\/index.php\?id\=)([0-9]+)/";
+        $content = preg_replace($search, '$@SWITCHCASTINDEX*$2@$', $content);
 
         // Link to switchcast view by moduleid
-        $search="/(".$base."\/mod\/switchcast\/view.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@SWITCHCASTVIEWBYID*$2@$', $content);
+        $search = "/(" . $base . "\/mod\/switchcast\/view.php\?id\=)([0-9]+)/";
+        $content = preg_replace($search, '$@SWITCHCASTVIEWBYID*$2@$', $content);
 
         return $content;
     }

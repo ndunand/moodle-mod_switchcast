@@ -19,16 +19,16 @@
  *
  * @package    mod
  * @subpackage switchcast
- * @copyright  2013 Université de Lausanne
+ * @copyright  2013-2015 Université de Lausanne
  * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$logs = array(
-    array('module'=>'switchcast', 'action'=>'view', 'mtable'=>'switchcast', 'field'=>'name'),
-    array('module'=>'switchcast', 'action'=>'update', 'mtable'=>'switchcast', 'field'=>'name'),
-    array('module'=>'switchcast', 'action'=>'add', 'mtable'=>'switchcast', 'field'=>'name'),
-    array('module'=>'switchcast', 'action'=>'delete', 'mtable'=>'switchcast', 'field'=>'name'), // TODO ND : I made up this; keep?
-);
+$logs = [
+        ['module' => 'switchcast', 'action' => 'view', 'mtable' => 'switchcast', 'field' => 'name'],
+        ['module' => 'switchcast', 'action' => 'update', 'mtable' => 'switchcast', 'field' => 'name'],
+        ['module' => 'switchcast', 'action' => 'add', 'mtable' => 'switchcast', 'field' => 'name'],
+        ['module' => 'switchcast', 'action' => 'delete', 'mtable' => 'switchcast', 'field' => 'name'],
+];

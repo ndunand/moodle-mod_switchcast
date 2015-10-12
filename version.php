@@ -19,18 +19,18 @@
  *
  * @package    mod
  * @subpackage switchcast
- * @copyright  2013 Université de Lausanne
+ * @copyright  2013-2015 Université de Lausanne
  * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version    = 2015012800;
-$module->requires   = 2014050800; // Requires Moodle 2.7
-$module->maturity   = MATURITY_STABLE;
-$module->release    = '1.5.3';
+$module->version = 2015070100;
+$module->requires = 2014050800; // Requires Moodle 2.7
+$module->maturity = MATURITY_ALPHA;
+$module->release = '2.0 alpha';
 
-$module->component  = 'mod_switchcast';
-$module->cron       = 15*60;
+$module->component = 'mod_switchcast';
+$module->cron = 15 * 60;
 

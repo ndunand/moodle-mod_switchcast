@@ -19,7 +19,7 @@
  *
  * @package    mod
  * @subpackage switchcast
- * @copyright  2013 Université de Lausanne
+ * @copyright  2013-2015 Université de Lausanne
  * @author     Nicolas.Dunand@unil.ch
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -38,11 +38,11 @@ class backup_switchcast_activity_structure_step extends backup_activity_structur
     protected function define_structure() {
 
         // Define each element separated
-        $switchcast = new backup_nested_element('switchcast', array('id'), array(
-            'ext_id', 'name', 'intro', 'introformat', 'is_ivt', 'inviting', 'organization_domain'));
+        $switchcast = new backup_nested_element('switchcast', ['id'],
+                ['ext_id', 'name', 'intro', 'introformat', 'is_ivt', 'inviting', 'organization_domain']);
 
         // Define sources
-        $switchcast->set_source_table('switchcast', array('id' => backup::VAR_ACTIVITYID));
+        $switchcast->set_source_table('switchcast', ['id' => backup::VAR_ACTIVITYID]);
 
         // Define file annotations
         $switchcast->annotate_files('mod_switchcast', 'intro', null); // This file area hasn't itemid

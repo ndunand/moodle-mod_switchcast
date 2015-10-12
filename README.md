@@ -7,9 +7,8 @@ http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 # Prerequisites:
 
  - Moodle version 2.7+
- - for the full feature set, the SWITCHaai UniqueID of your users must be available as a Moodle user profile field
+ - for the full feature set, the SWITCHaai UniqueID of your users must be available as a Moodle user profile field (regular or extended, see below)
  - PHP with CURL module supporting HTTPS protobol
- - PHP with SimpleXML module
 
 
 # Preliminary step:
@@ -23,7 +22,7 @@ You will have to contact Switch in order to set this up; they will provide you w
 
 The latest version of the mod_switchcast Moodle activity plugin is available on GitHub : https://github.com/ndunand/moodle-mod_switchcast .
 
-Install as any other activity module into your Moodle's mod/ directory, then visit http://your.moodle/admin/index.php to proceed to the module installation.
+Install as any other activity module into your Moodle's /mod directory, then visit http://your.moodle/admin/ to proceed with module installation.
 
 
 # Module setup:
@@ -38,21 +37,13 @@ Last, proceed to the module settings (via Site administration -> Plugins -> Acti
 
  - Enabled templates: use the default values, or contact Switch about using other templates
 
- - Allow production channels: enable this to allow production channels, be warned that these will be billed to your university!
-
- - Allow test channels: you may enable this to allow test channels, which have a very limited lifetime but are free for testing
-
- - XML cache lifetime: use the default value for best results
+ - Cache lifetime: use the default value for best results
 
  - Display only used columns: enable this if you want only to display the used fields (columns) in the clip list, such as Recording Station, Owner, Actions. (This has a performance impact, because the list of all clips must be retrieved on each display.)
 
  - Logging enabled: enable only if necessary for troubleshooting
 
  - Default system account: this should be the System Account for your institution, as provided by Switch
-
- - Enabled institutions: this should be your institution's unique name, in the form "uniXX.ch"; you may here specify several institutions (coma-separated) if you have set up multi institution support with Switch (not necessary)
-
- - System account for ... (one for each enabled institution on the previous setting – visible only after having saved the settings): System Account for each enabled institution, as provided by Switch
 
  - AAI unique ID field: the Moodle profile field where the current user's SWITCHaai UniqueID can be found
    - if it's a regular profile field (such as "username"), simply enter its name here;

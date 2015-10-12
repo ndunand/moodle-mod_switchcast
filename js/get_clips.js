@@ -24,73 +24,73 @@
  */
 
 
-(function($){
+(function ($) {
 
-    $(document).ready(function(){
+    $(document).ready(function () {
 
-        var id                  = $('#switchcast-cmid-hidden-input').val(),
-            the_table           = $('#switchcast-clips-table');
+        var id = $('#switchcast-cmid-hidden-input').val(),
+            the_table = $('#switchcast-clips-table');
         var directive = {
             'tr.switchcast-clip-template-row': {
                 'entry<-entries': {
-                    'img@src' : 'entry.cover',
-                    'span.title' : 'entry.title',
-                    'div.subtitle' : 'entry.subtitle',
-                    'a.annotate@href' : 'entry.AnnotationLink',
-                    'a.flash@href' : 'entry.linkflash',
-                    'a.mov@href' : 'entry.linkmov',
-                    'a.m4v@href' : 'entry.linkm4v',
-                    'td.switchcast-presenter' : 'entry.presenter',
-                    'td.switchcast-location' : 'entry.location',
-                    'td.switchcast-recordingstation' : 'entry.recordingstation',
-                    'td.switchcast-recordingdate' : 'entry.recordingdate',
-                    'td.switchcast-owner' : 'entry.owner_name',
-                    'a.switchcast-editdetails@href' : 'entry.editdetails_page',
+                    'img@src':                        'entry.cover',
+                    'span.title':                     'entry.title',
+                    'div.subtitle':                   'entry.subtitle',
+                    'a.annotate@href':                'entry.AnnotationLink',
+                    'a.flash@href':                   'entry.linkflash',
+                    'a.mov@href':                     'entry.linkmov',
+                    //'a.m4v@href':                     'entry.linkm4v',
+                    'td.switchcast-presenter':        'entry.presenter',
+                    'td.switchcast-location':         'entry.location',
+                    'td.switchcast-recordingstation': 'entry.recordingstation',
+                    'td.switchcast-recordingdate':    'entry.recordingdate',
+                    'td.switchcast-owner':            'entry.owner_name',
+                    'a.switchcast-editdetails@href':  'entry.editdetails_page',
 //                    'a.switchcast-editclip@href' : 'entry.editclip_page',
 // (we don't display this link anymore)
-                    'a.switchcast-deleteclip@href' : 'entry.deleteclip_page',
-                    'a.switchcast-clipmembers@href' : 'entry.clipmembers_page'
+                    'a.switchcast-deleteclip@href':   'entry.deleteclip_page',
+                    'a.switchcast-clipmembers@href':  'entry.clipmembers_page'
                 }
             }
         };
         // cf. http://beebole.com/pure/documentation/get-started/
         var tfn = the_table.compile(directive);
 
-        scast_getclips = function(){
+        var scast_getclips = function () {
 
             $('.loading').show();
             $('.switchcast-clip-template-row').hide();
 
-            var length          = parseInt($('#menuswitchcast-perpage').val()),
-                offset          = parseInt($('#menuswitchcast-pageno').val() - 1) * length,
-                filterstr       = encodeURIComponent(
-                                    'title=' + $('input[name=switchcast-title]').val()
-                                    + '&presenter=' + $('input[name=switchcast-presenter]').val()
-                                    + '&location=' + $('input[name=switchcast-location]').val()
-                                    + '&recordingstation=' + $('input[name=switchcast-recordingstation]').val()
-                                    + '&ivt_owner=' + $('select[name=switchcast-owner]').val()
-                                    + '&withoutowner=' + $('input[name=switchcast-withoutowner]').is(':checked')
-                                ),
-                sortkey         = '',
-                sortdir         = '',
-                json_url        = M.cfg.wwwroot+'/mod/switchcast/getClips.php'
-                                    + '?id=' + id
-                                    + '&length=' + length
-                                    + '&offset=' + offset
-                                    + '&filterstr=' + filterstr;
+            var length = parseInt($('#menuswitchcast-perpage').val()),
+                offset = parseInt($('#menuswitchcast-pageno').val() - 1) * length,
+                filterstr = encodeURIComponent(
+                    'title=' + $('input[name=switchcast-title]').val()
+                    + '&presenter=' + $('input[name=switchcast-presenter]').val()
+                    + '&location=' + $('input[name=switchcast-location]').val()
+                    + '&recordingstation=' + $('input[name=switchcast-recordingstation]').val()
+                    + '&ivt_owner=' + $('select[name=switchcast-owner]').val()
+                    + '&withoutowner=' + $('input[name=switchcast-withoutowner]').is(':checked')
+                ),
+                sortkey = '',
+                sortdir = '',
+                json_url = M.cfg.wwwroot + '/mod/switchcast/get_events.php'
+                    + '?id=' + id
+                    + '&length=' + length
+                    + '&offset=' + offset
+                    + '&filterstr=' + filterstr;
 
             if ($('.switchcast-sortable a.sort').length > 0) {
                 sortkey = $('.switchcast-sortable a.sort').parent().attr('data-sortkey'),
-                sortdir = $('.switchcast-sortable a.sort').attr('class').replace(/^sort /, '');
+                    sortdir = $('.switchcast-sortable a.sort').attr('class').replace(/^sort /, '');
                 json_url = json_url
-                                    + '&sortkey=' + sortkey
-                                    + '&sortdir=' + sortdir;
+                + '&sortkey=' + sortkey
+                + '&sortdir=' + sortdir;
             }
 
 
-            $.getJSON(json_url, function(data){
+            $.getJSON(json_url, function (data) {
                 if (typeof data.error !== 'undefined') {
-                    if(confirm(data.error)) {
+                    if (confirm(data.error)) {
                         document.location.reload();
                     }
                     return;
@@ -111,13 +111,13 @@
                         if (theclip.owner_name && theclip.owner_name.length) {
                             show_owner = true;
                         }
-                        if (theclip.recordingstation.length) {
+                        if (theclip.recordingstation && theclip.recordingstation.length) {
                             show_recordingstation = true;
                         }
-                        if (theclip.location.length) {
+                        if (theclip.location && theclip.location.length) {
                             show_location = true;
                         }
-                        if (theclip.presenter.length) {
+                        if (theclip.presenter && theclip.presenter.length) {
                             show_presenter = true;
                         }
                         if (theclip.clipmembers_page != '#switchcast-inactive' || theclip.deleteclip_page != '#switchcast-inactive' || theclip.editdetails_page != '#switchcast-inactive') {
@@ -135,11 +135,10 @@
                     show_location = true;
                     show_presenter = true;
                 }
-//                console.log(data.clips);
                 var nbpages = 1;
                 the_table.html(tfn(items)); // cf. https://groups.google.com/forum/?fromgroups=#!topic/Pure-Unobtrusive-Rendering-Engine/78jEgjCd57c
                 if (sortkey !== '' && sortdir !== '') {
-                    $('.switchcast-clips-table th[data-sortkey='+sortkey+']').find('a').attr('class', 'sort '+sortdir);
+                    $('.switchcast-clips-table th[data-sortkey=' + sortkey + ']').find('a').attr('class', 'sort ' + sortdir);
                 }
                 $('a[href=#switchcast-inactive], a:not([href])').remove();
 
@@ -180,7 +179,7 @@
                 }
 
                 // hide action hint icon if no actions
-                $('td.switchcast-actions').each(function(){
+                $('td.switchcast-actions').each(function () {
                     var $this = $(this);
                     if ($this.find('a').length == 0) {
                         $this.addClass('switchcast-actions-empty');
@@ -200,9 +199,9 @@
                 nbpages = Math.ceil(data.count / length);
                 $('#menuswitchcast-pageno option').remove();
                 for (var i = 1; i <= nbpages; i++) {
-                    $('#menuswitchcast-pageno').append($('<option value="'+i+'">'+i+'</option>'));
+                    $('#menuswitchcast-pageno').append($('<option value="' + i + '">' + i + '</option>'));
                 }
-                $('#menuswitchcast-pageno').val(offset/length + 1);
+                $('#menuswitchcast-pageno').val(offset / length + 1);
 
                 // put checkbox back in previous position
                 if (modswitchcast_tbldsplaypar.showsubtitles === true) {
@@ -215,24 +214,24 @@
 
         scast_getclips();
 
-        $('.menuswitchcast-pageno').change(function(){
+        $('.menuswitchcast-pageno').change(function () {
             scast_getclips();
         });
 
-        $('.menuswitchcast-perpage').change(function(){
+        $('.menuswitchcast-perpage').change(function () {
             if ($(this).val() !== '') {
                 $('.menuswitchcast-pageno').val('1');
                 scast_getclips();
             }
         });
 
-        $('.switchcast-filters button.cancel').click(function(){
+        $('.switchcast-filters button.cancel').click(function () {
             $('.switchcast-filters').find('input, select').val('');
             $('.switchcast-filters').find('input, select').prop('checked', false);
             scast_getclips();
         });
 
-        $('.switchcast-filters button.ok').click(function(){
+        $('.switchcast-filters button.ok').click(function () {
             scast_getclips();
         });
 

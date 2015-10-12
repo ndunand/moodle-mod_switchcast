@@ -19,7 +19,7 @@
  *
  * @package    mod
  * @subpackage switchcast
- * @copyright  2013 Université de Lausanne
+ * @copyright  2013-2015 Université de Lausanne
  * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -36,7 +36,8 @@ function xmldb_switchcast_upgrade($oldversion) {
         // Define fields to be added to table switchcast
         $table = new xmldb_table('switchcast');
         $field1 = new xmldb_field('userupload', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'inviting');
-        $field2 = new xmldb_field('userupload_maxfilesize', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'userupload');
+        $field2 = new xmldb_field('userupload_maxfilesize', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0',
+                'userupload');
 
         // Conditionally launch add fields
         if (!$dbman->field_exists($table, $field1)) {
@@ -46,8 +47,7 @@ function xmldb_switchcast_upgrade($oldversion) {
             $dbman->add_field($table, $field2);
         }
 
-        // Switchcast savepoint reached.
-        upgrade_mod_savepoint(true, 2013120100, 'switchcast');
+        upgrade_mod_savepoint(true, 2013120100, 'mod', 'switchcast');
     }
 
     if ($oldversion < 2013121600) {
@@ -55,12 +55,25 @@ function xmldb_switchcast_upgrade($oldversion) {
         $table2 = new xmldb_table('switchcast_uploadedclip');
 
         if (!$dbman->table_exists($table2)) {
-            $dbman->install_one_table_from_xmldb_file($CFG->dirroot.'/mod/switchcast/db/install.xml', 'switchcast_uploadedclip');
+            $dbman->install_one_table_from_xmldb_file($CFG->dirroot . '/mod/switchcast/db/install.xml',
+                    'switchcast_uploadedclip');
         }
 
-        // Switchcast savepoint reached.
-        upgrade_mod_savepoint(true, 2013121600, 'switchcast');
+        upgrade_mod_savepoint(true, 2013121600, 'mod', 'switchcast');
     }
+
+    if ($oldversion < 2015070100) {
+
+        // Define table matrix to be created
+        $table = new xmldb_table('switchcast');
+
+        // Adding fields to table matrix
+        $newField = $table->add_field('allow_annotations', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '1');
+        $dbman->add_field($table, $newField);
+
+        upgrade_plugin_savepoint(true, 2015070100, 'mod', 'switchcast');
+    }
+
 
     return true;
 }

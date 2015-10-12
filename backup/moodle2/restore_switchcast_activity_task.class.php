@@ -19,7 +19,7 @@
  *
  * @package    mod
  * @subpackage switchcast
- * @copyright  2013 Université de Lausanne
+ * @copyright  2013-2015 Université de Lausanne
  * @author     Nicolas.Dunand@unil.ch
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -54,9 +54,9 @@ class restore_switchcast_activity_task extends restore_activity_task {
      * processed by the link decoder
      */
     static public function define_decode_contents() {
-        $contents = array();
+        $contents = [];
 
-        $contents[] = new restore_decode_content('switchcast', array('intro'), 'switchcast');
+        $contents[] = new restore_decode_content('switchcast', ['intro'], 'switchcast');
 
         return $contents;
     }
@@ -66,13 +66,12 @@ class restore_switchcast_activity_task extends restore_activity_task {
      * to the activity to be executed by the link decoder
      */
     static public function define_decode_rules() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_decode_rule('SWITCHCASTVIEWBYID', '/mod/switchcast/view.php?id=$1', 'course_module');
         $rules[] = new restore_decode_rule('SWITCHCASTINDEX', '/mod/switchcast/index.php?id=$1', 'course');
 
         return $rules;
-
     }
 
     /**
@@ -82,7 +81,7 @@ class restore_switchcast_activity_task extends restore_activity_task {
      * of {@link restore_log_rule} objects
      */
     static public function define_restore_log_rules() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_log_rule('switchcast', 'add', 'view.php?id={course_module}', '{switchcast}');
         $rules[] = new restore_log_rule('switchcast', 'update', 'view.php?id={course_module}', '{switchcast}');
@@ -103,11 +102,11 @@ class restore_switchcast_activity_task extends restore_activity_task {
      * activity level. All them are rules not linked to any module instance (cmid = 0)
      */
     static public function define_restore_log_rules_for_course() {
-        $rules = array();
+        $rules = [];
 
         // Fix old wrong uses (missing extension)
-        $rules[] = new restore_log_rule('switchcast', 'view all', 'index?id={course}', null,
-                                        null, null, 'index.php?id={course}');
+        $rules[] = new restore_log_rule('switchcast', 'view all', 'index?id={course}', null, null, null,
+                'index.php?id={course}');
         $rules[] = new restore_log_rule('switchcast', 'view all', 'index.php?id={course}', null);
 
         return $rules;

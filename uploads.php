@@ -19,32 +19,30 @@
  *
  * @package    mod
  * @subpackage switchcast
- * @copyright  2013 Université de Lausanne
+ * @copyright  2013-2015 Université de Lausanne
  * @author     Nicolas Dunand <Nicolas.Dunand@unil.ch>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once('../../config.php');
-require_once($CFG->dirroot.'/mod/switchcast/lib.php');
-require_once($CFG->dirroot.'/mod/switchcast/scast_obj.class.php');
-require_once($CFG->dirroot.'/mod/switchcast/scast_clip.class.php');
+require_once($CFG->dirroot . '/mod/switchcast/lib.php');
 
 $id = required_param('id', PARAM_INT); // Course Module ID
 
-$url = new moodle_url('/mod/switchcast/uploads.php', array('id' => $id));
-$return_channel = new moodle_url('/mod/switchcast/view.php', array('id' => $id));
+$url = new moodle_url('/mod/switchcast/uploads.php', ['id' => $id]);
+$return_channel = new moodle_url('/mod/switchcast/view.php', ['id' => $id]);
 
 $PAGE->set_url($url);
 
-if (! $cm = get_coursemodule_from_id('switchcast', $id)) {
+if (!$cm = get_coursemodule_from_id('switchcast', $id)) {
     print_error('invalidcoursemodule');
 }
 
-if (! $course = $DB->get_record('course', array('id' => $cm->course))) {
+if (!$course = $DB->get_record('course', ['id' => $cm->course])) {
     print_error('coursemisconf');
 }
 
-$return_course = new moodle_url('/course/view.php', array('id' => $course->id));
+$return_course = new moodle_url('/course/view.php', ['id' => $course->id]);
 
 require_course_login($course, false, $cm);
 
@@ -52,7 +50,7 @@ if (!$switchcast = switchcast_get_switchcast($cm->instance)) {
     print_error('invalidcoursemodule', null, $return_course);
 }
 
-if (! $context = context_module::instance($cm->id)) {
+if (!$context = context_module::instance($cm->id)) {
     print_error('badcontext', null, $return_course);
 }
 
@@ -60,9 +58,8 @@ if (!has_capability('mod/switchcast:isproducer', $context)) {
     print_error('feature_forbidden', 'switchcast', $return_channel);
 }
 
-$sc_obj  = new scast_obj();
-$sc_obj->doRead($switchcast->id);
-
+$sc_obj = new mod_switchcast_series();
+$sc_obj->fetch($switchcast->id);
 
 // Display
 
@@ -73,6 +70,6 @@ echo $OUTPUT->header();
 $renderer = $PAGE->get_renderer('mod_switchcast');
 echo html_writer::tag('h2', get_string('uploaded_clips', 'switchcast'));
 $renderer->display_user_pending_clips(true, true, true, true, $sc_obj->getIvt());
-echo html_writer::link($return_channel, get_string('back_to_channel','switchcast'));
+echo html_writer::link($return_channel, get_string('back_to_channel', 'switchcast'));
 echo $OUTPUT->footer();
 

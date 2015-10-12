@@ -19,86 +19,92 @@
  *
  * @package    mod
  * @subpackage switchcast
- * @copyright  2013 Université de Lausanne
+ * @copyright  2013-2015 Université de Lausanne
  * @author     Nicolas.Dunand@unil.ch
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
-require_once($CFG->dirroot.'/mod/switchcast/scast_user.class.php');
+require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
 class mod_switchcast_mod_form extends moodleform_mod {
 
     function definition() {
         global $CFG, $PAGE;
 
-        $mform    =& $this->_form;
+        $mform =& $this->_form;
 
         // some checks, before going any further
-        $scuser = new scast_user();
+        $scuser = new mod_switchcast_user();
         if (empty($this->_instance) && $scuser->getExternalAccount() == '') {
             // $USER has no SWITCHaai account and is attempting to create a new activity instance:
             // he cannot create a channel nor link to an existing channel (because he doesn't own
             // any, as he doesn't exist in SwitchCast). Therefore, we prevent him from going any further.
-            print_error('user_notaai', 'switchcast', new moodle_url('/course/view.php', array('id' => (int)$this->current->course)));
+            print_error('user_notaai', 'switchcast',
+                    new moodle_url('/course/view.php', ['id' => (int)$this->current->course]));
         }
-        else if (empty($this->_instance) && !in_array(scast_obj::getOrganizationByEmail($scuser->getExternalAccount()), scast_obj::getEnabledOrgnanizations())) {
+        else if (empty($this->_instance) && !in_array(mod_switchcast_series::getOrganizationByEmail($scuser->getExternalAccount()),
+                        mod_switchcast_series::getEnabledOrgnanizations())
+        ) {
             // $USER has a SWITCHaai account, but we don't have a sys_account for his HomeOrganization.
             // Therefore, we prevent him from going any further.
-            print_error('user_homeorgnotenabled', 'switchcast', new moodle_url('/course/view.php', array('id' => (int)$this->current->course)), scast_obj::getOrganizationByEmail($scuser->getExternalAccount()));
+            print_error('user_homeorgnotenabled', 'switchcast',
+                    new moodle_url('/course/view.php', ['id' => (int)$this->current->course]),
+                    mod_switchcast_series::getOrganizationByEmail($scuser->getExternalAccount()));
         }
 
-        if (!empty($this->_instance) && !in_array($this->current->organization_domain, scast_obj::getEnabledOrgnanizations())) {
-            print_error('badorganization', 'switchcast', new moodle_url('/course/view.php', array('id' => (int)$this->current->course)));
+        if (!empty($this->_instance) && !in_array($this->current->organization_domain,
+                        mod_switchcast_series::getEnabledOrgnanizations())
+        ) {
+            print_error('badorganization', 'switchcast',
+                    new moodle_url('/course/view.php', ['id' => (int)$this->current->course]));
         }
 
         if ($scuser->getExternalAccount() != '') {
             // $USER has a SWITCHaai account, so register him at SwitchCast to make sure it exists there
-            scast_obj::registerUser($scuser);
+            //            mod_switchcast_obj::registerUser($scuser);
         }
 
         // have we got a sys_account for the channel?
         $sysaccount = false;
-        if ( !empty($this->_instance) && in_array($this->current->organization_domain, scast_obj::getEnabledOrgnanizations()) ) {
-            $sysaccount_extid = scast_obj::getSysAccountByOrganization($this->current->organization_domain);
-            $sysaccount = new scast_user($sysaccount_extid);
+        if (!empty($this->_instance) && in_array($this->current->organization_domain,
+                        mod_switchcast_series::getEnabledOrgnanizations())
+        ) {
+            $sysaccount_extid = mod_switchcast_series::getSysAccountByOrganization($this->current->organization_domain);
+            $sysaccount = new mod_switchcast_user($sysaccount_extid);
         }
 
-        if ($CFG->version >= 2013051400)
-            // Moodle 2.5 or later
-            $PAGE->requires->jquery();
-        else {
-            // earlier Moodle versions
-            $PAGE->requires->js('/mod/switchcast/js/jquery-1.9.1.min.js');
-        }
-        $PAGE->requires->js('/mod/switchcast/js/existing_channel.js');
+        $PAGE->requires->jquery();
+        $PAGE->requires->js('/mod/switchcast/js/existing_series.js');
 
         // General settings :
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
-        $mform->addElement('text', 'name', get_string('switchcastname', 'switchcast'), array('size'=>'64'));
+        $mform->addElement('text', 'name', get_string('switchcastname', 'switchcast'), ['size' => '64']);
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
-        } else {
+        }
+        else {
             $mform->setType('name', PARAM_CLEANHTML);
         }
         $mform->addRule('name', null, 'required', null, 'client');
 
-        $this->add_intro_editor(true, get_string('chatintro', 'chat'));
+        $this->add_intro_editor(false, get_string('chatintro', 'chat'));
 
         // Miscellaneous settings :
         $mform->addElement('header', 'miscellaneoussettingshdr', get_string('miscellaneoussettings', 'form'));
 
-        if (scast_obj::getValueByKey('moreinfo_url')) {
-            $mform->addElement('static', 'moreinfo_url', get_string('miscellaneoussettings_help', 'switchcast'), html_writer::link(scast_obj::getValueByKey('moreinfo_url'), scast_obj::getValueByKey('moreinfo_url')));
+        if (mod_switchcast_series::getValueForKey('moreinfo_url')) {
+            $mform->addElement('static', 'moreinfo_url', get_string('miscellaneoussettings_help', 'switchcast'),
+                    html_writer::link(mod_switchcast_series::getValueForKey('moreinfo_url'),
+                            mod_switchcast_series::getValueForKey('moreinfo_url')));
         }
 
-        $mform->addElement('select', 'channelnew', get_string('channel', 'switchcast'), array(
-            SWITCHCAST_CHANNEL_NEW      => get_string('channelnew', 'switchcast'),
-            SWITCHCAST_CHANNEL_EXISTING => get_string('channelexisting', 'switchcast')
-        ));
+        $mform->addElement('select', 'channelnew', get_string('channel', 'switchcast'), [
+                        SWITCHCAST_CHANNEL_NEW      => get_string('channelnew', 'switchcast'),
+                        SWITCHCAST_CHANNEL_EXISTING => get_string('channelexisting', 'switchcast')
+                ]);
         if (empty($this->_instance)) {
             $mform->setDefault('channelnew', SWITCHCAST_CHANNEL_NEW);
         }
@@ -106,27 +112,13 @@ class mod_switchcast_mod_form extends moodleform_mod {
             $mform->setDefault('channelnew', SWITCHCAST_CHANNEL_EXISTING);
         }
 
-        $channeltypes = array();
-        if (scast_obj::getValueByKey('allow_test_channels')) {
-            $channeltypes[SWITCHCAST_CHANNEL_TEST] = get_string('channeltest', 'switchcast');
-        }
-        if (scast_obj::getValueByKey('allow_prod_channels')) {
-            $channeltypes[SWITCHCAST_CHANNEL_PROD] = get_string('channelprod', 'switchcast');
-        }
-        if (!count($channeltypes)) {
-            print_error('misconfiguration', 'switchcast');
-        }
-        $mform->addElement('select', 'channeltype', get_string('channeltype', 'switchcast'), $channeltypes);
-        $mform->setDefault('channeltype', SWITCHCAST_CHANNEL_TEST);
-        $mform->disabledIf('channeltype', 'channelnew', 'eq', SWITCHCAST_CHANNEL_EXISTING);
-
         if (empty($this->_instance)) {
             if ($scuser->getExternalAccount() != '') {
                 // USER has a SWITCHaai account -> get his channels
                 $userchannels = $scuser->getChannels();
             }
             else {
-                $userchannels = array();
+                $userchannels = [];
             }
         }
         else {
@@ -136,11 +128,11 @@ class mod_switchcast_mod_form extends moodleform_mod {
             }
             else {
                 // No sys_account for this instance's organization -> no channels list can be displayed
-                $userchannels = array();
+                $userchannels = [];
             }
         }
 
-        $channels = array();
+        $channels = [];
         if (!empty($this->_instance) && $scuser->getExternalAccount() == '') {
             // Instance exists but $USER is not SWITCHaai => get channels list
             // from $sysaccount, which MUST exist because we already checked.
@@ -148,8 +140,8 @@ class mod_switchcast_mod_form extends moodleform_mod {
             // HomeOrg isn't the same as the channel's.
             $userchannels = $sysaccount->getChannels();
         }
-        foreach ($userchannels->channel as $userchannel) {
-            $channels[(string)$userchannel->ext_id] = (string)$userchannel->name;
+        foreach ($userchannels as $userchannel) {
+            $channels[(string)$userchannel->identifier] = (string)$userchannel->title;
         }
         $mform->addElement('select', 'ext_id', get_string('channelchoose', 'switchcast'), $channels);
         $mform->disabledIf('ext_id', 'channelnew', 'eq', SWITCHCAST_CHANNEL_NEW);
@@ -163,46 +155,24 @@ class mod_switchcast_mod_form extends moodleform_mod {
             $mform->removeElement('newchannelname');
         }
 
-        $scast = new scast_obj();
-
-        $scast_disciplins = $scast->getAllDisciplines();
-        $mform->addElement('select', 'disciplin', get_string('disciplin', 'switchcast'), $scast_disciplins);
+        $scast = new mod_switchcast_series();
 
         $scast_licenses = $scast->getAllLicenses();
         $mform->addElement('select', 'license', get_string('license', 'switchcast'), $scast_licenses);
         $mform->setDefault('license', '');
 
-        $mform->addElement('text', 'contenthours', get_string('contenthours', 'switchcast'));
-        $mform->setType('contenthours', PARAM_INT);
-        $mform->addRule('contenthours', null, 'required', null, 'client');
-
-        $lifetime = array(
-            6  => get_string('months', 'switchcast', 6),
-            12 => get_string('months', 'switchcast', 12),
-            24 => get_string('years', 'switchcast', 2),
-            36 => get_string('years', 'switchcast', 3),
-            60 => get_string('years', 'switchcast', 5),
-            72 => get_string('years', 'switchcast', 6)
-        );
-        $mform->addElement('select', 'lifetime', get_string('lifetime', 'switchcast'), $lifetime);
-        $mform->setDefault('lifetime', 36);
-
-        $mform->addElement('text', 'department', get_string('department', 'switchcast'));
-        $mform->setType('department', PARAM_TEXT);
-        $mform->addRule('department', null, 'required', null, 'client');
-
-        $annotations = array(
-            SWITCHCAST_NO_ANNOTATIONS => get_string('annotationsno', 'switchcast'),
-            SWITCHCAST_ANNOTATIONS => get_string('annotationsyes', 'switchcast')
-        );
+        $annotations = [
+                SWITCHCAST_NO_ANNOTATIONS => get_string('annotationsno', 'switchcast'),
+                SWITCHCAST_ANNOTATIONS    => get_string('annotationsyes', 'switchcast')
+        ];
         $mform->addElement('select', 'annotations', get_string('annotations', 'switchcast'), $annotations);
         $mform->setDefault('annotations', SWITCHCAST_NO_ANNOTATIONS);
 
-        $scast_templates = scast_obj::getAllTemplates();
-        $templates_admin = scast_obj::getEnabledTemplates();
-        $templates = array();
-        foreach($templates_admin as $template_id => $template_name) {
-            if (array_key_exists($template_id, $scast_templates)) {
+        $mod_switchcast_templates = mod_switchcast_series::getAllTemplates();
+        $templates_admin = mod_switchcast_series::getEnabledTemplates(); // TODO NOW : remove all about templates
+        $templates = [];
+        foreach ($templates_admin as $template_id => $template_name) {
+            if (array_key_exists($template_id, $mod_switchcast_templates)) {
                 $templates[$template_id] = $template_name;
             }
         }
@@ -210,17 +180,18 @@ class mod_switchcast_mod_form extends moodleform_mod {
         $mform->disabledIf('template_id', 'channelnew', 'eq', SWITCHCAST_CHANNEL_EXISTING);
         $mform->addHelpButton('template_id', 'template_id', 'switchcast');
 
-        $yesno = array(0 => get_string('no'), 1 => get_string('yes'));
+        $yesno = [0 => get_string('no'), 1 => get_string('yes')];
         $mform->addElement('select', 'is_ivt', get_string('is_ivt', 'switchcast'), $yesno);
         $mform->addElement('select', 'inviting', get_string('inviting', 'switchcast'), $yesno);
         $mform->disabledIf('inviting', 'is_ivt', 'eq', 0);
 
-        if (scast_obj::getValueByKey('allow_userupload') && scast_obj::getValueByKey('userupload_maxfilesize')) {
+        if (mod_switchcast_series::getValueForKey('allow_userupload') && mod_switchcast_series::getValueForKey('userupload_maxfilesize')) {
             $mform->addElement('select', 'userupload', get_string('allow_userupload', 'switchcast'), $yesno);
-            $mform->addElement('select', 'userupload_maxfilesize', get_string('userupload_maxfilesize', 'switchcast'), scast_obj::getMaxfilesizes(true));
+            $mform->addElement('select', 'userupload_maxfilesize', get_string('userupload_maxfilesize', 'switchcast'),
+                    mod_switchcast_series::getMaxfilesizes(true));
         }
 
-        if ( !empty($this->_instance) && scast_obj::getOrganizationByEmail($scuser->getExternalAccount()) !== $this->current->organization_domain ) {
+        if (!empty($this->_instance) && mod_switchcast_series::getOrganizationByEmail($scuser->getExternalAccount()) !== $this->current->organization_domain) {
             // teacher has no SwitchAAI account OR is from a different HomeOrg than the Channel Producer(s),
             // so check whether we have sys_account for him to see if we can manipulate the channel
             if ($sysaccount) {
@@ -233,42 +204,33 @@ class mod_switchcast_mod_form extends moodleform_mod {
                 $mform->removeElement('is_ivt');
                 $mform->removeElement('template_id');
                 $mform->removeElement('annotations');
-                $mform->removeElement('department');
-                $mform->removeElement('lifetime');
-                $mform->removeElement('contenthours');
                 $mform->removeElement('license');
-                $mform->removeElement('disciplin');
                 $mform->removeElement('ext_id');
-                $mform->removeElement('channeltype');
                 $mform->removeElement('channelnew');
                 $mform->removeElement('userupload');
                 $mform->removeElement('userupload_maxfilesize');
-                $mform->addElement('html', get_string('channeldoesnotbelong', 'switchcast', $this->current->organization_domain));
+                $mform->addElement('html',
+                        get_string('channeldoesnotbelong', 'switchcast', $this->current->organization_domain));
             }
         }
 
         // What if the channel does not exist any more? -> remove all channel manipulation options and display a notice
-        if (  !empty($this->_instance) && scast_obj::getOrganizationByEmail($scuser->getExternalAccount()) == $this->current->organization_domain && !isset($channels[$this->current->ext_id]) ) {
+        if (!empty($this->_instance) && mod_switchcast_series::getOrganizationByEmail($scuser->getExternalAccount()) == $this->current->organization_domain && !isset($channels[$this->current->ext_id])) {
             $mform->removeElement('inviting');
             $mform->removeElement('is_ivt');
             $mform->removeElement('template_id');
             $mform->removeElement('annotations');
-            $mform->removeElement('department');
-            $mform->removeElement('lifetime');
-            $mform->removeElement('contenthours');
             $mform->removeElement('license');
-            $mform->removeElement('disciplin');
             $mform->removeElement('ext_id');
-            $mform->removeElement('channeltype');
             $mform->removeElement('channelnew');
             $mform->removeElement('userupload');
             $mform->removeElement('userupload_maxfilesize');
-            $mform->addElement('html', html_writer::tag('p', get_string('channel_not_found', 'switchcast'), array('class' => 'notify')));
+            $mform->addElement('html',
+                    html_writer::tag('p', get_string('channel_not_found', 'switchcast'), ['class' => 'notify']));
         }
 
         $this->standard_coursemodule_elements();
         $this->add_action_buttons();
-
     }
 
     function data_preprocessing(&$default_values) {
@@ -279,17 +241,11 @@ class mod_switchcast_mod_form extends moodleform_mod {
         global $DB;
 
         $errors = parent::validation($data, $files);
-        $scuser = new scast_user();
+        $scuser = new mod_switchcast_user();
 
         if ($data['channelnew'] == SWITCHCAST_CHANNEL_NEW) {
             if ($scuser->getExternalAccount() == '') {
                 $errors['channelnew'] = get_string('user_notaai', 'switchcast');
-            }
-            if (strlen($data['department']) < 1) {
-                $errors['department'] = get_string('nodepartment', 'switchcast');
-            }
-            if ((int)$data['contenthours'] < 1) {
-                $errors['contenthours'] = get_string('nocontenthours', 'switchcast');
             }
             if (!$data['newchannelname']) {
                 $errors['newchannelname'] = get_string('required');
@@ -297,39 +253,27 @@ class mod_switchcast_mod_form extends moodleform_mod {
         }
         if ($data['channelnew'] == SWITCHCAST_CHANNEL_EXISTING) {
             // make sure we can be external_authority for this channel
-            $scobj = new scast_obj();
+            $scobj = new mod_switchcast_series();
             $ext_id = isset($data['ext_id']) ? ($data['ext_id']) : ($this->current->ext_id);
             $scobj->setExtId($ext_id);
-            $sysaccount_extid = scast_obj::getSysAccountOfUser();
+            $sysaccount_extid = mod_switchcast_series::getSysAccountOfUser();
             // we must explicitly set $USER as a producer in $scobj or we won't be allowed to add his system_user
-            $scobj->setOrganizationDomain(scast_obj::getOrganizationByEmail($sysaccount_extid));
+            $scobj->setOrganizationDomain(mod_switchcast_series::getOrganizationByEmail($sysaccount_extid));
             $scobj->setProducer($scuser->getExternalAccount());
             // first, add SysAccount as producer (using $USER account), so we can use SysAccount later to make API calls
-            $scobj->addProducer($sysaccount_extid, false);
+//            $scobj->addProducer($sysaccount_extid, false);
             $channelid = (empty($this->_instance)) ? ($ext_id) : ($this->current->id);
             // if there already is one instance we must refer to it by its Moodle ID otherwise there could
             // be several records!
-            $thechannel = $scobj->doRead($channelid, !empty($this->_instance), true);
-            if (trim((string)$thechannel->access) == 'external_authority' && (int)$thechannel->external_authority_id != $scobj->getValueByKey('external_authority_id')) {
-                // we can't steal external_authority from another institution
-                $errors['ext_id'] = get_string('channelhasotherextauth', 'switchcast', $scobj->getExternalAuthName($thechannel->external_authority_id));
-            }
+            $thechannel = $scobj->fetch($channelid, !empty($this->_instance), true);
         }
 
         // make sure we don't use VISIBLEGROUPS
-//        if ($data['groupmode'] == VISIBLEGROUPS) {
-//            $errors['groupmode'] = get_string('novisiblegroups', 'switchcast');
-//        }
+        //        if ($data['groupmode'] == VISIBLEGROUPS) {
+        //            $errors['groupmode'] = get_string('novisiblegroups', 'switchcast');
+        //        }
         else if ($data['groupmode'] != NOGROUPS && !$data['is_ivt']) {
             $errors['groupmode'] = get_string('nogroups_withoutivt', 'switchcast');
-        }
-
-        // make sure we use only allowed channel types
-        if ($data['channeltype'] == SWITCHCAST_CHANNEL_PROD && !scast_obj::getValueByKey('allow_prod_channels')) {
-            $errors['channeltype'] = get_string('channeltypeforbidden', 'switchcast', $data['channeltype']);
-        }
-        else if ($data['channeltype'] == SWITCHCAST_CHANNEL_TEST && !scast_obj::getValueByKey('allow_test_channels')) {
-            $errors['channeltype'] = get_string('channeltypeforbidden', 'switchcast', $data['channeltype']);
         }
 
         return $errors;
@@ -344,8 +288,8 @@ class mod_switchcast_mod_form extends moodleform_mod {
         if (empty($data->completionsection)) {
             $data->completionsection = 0;
         }
+
         return $data;
     }
-
 }
 

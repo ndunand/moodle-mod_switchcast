@@ -63,6 +63,7 @@ class clip_editdetails extends \core\event\base {
         $a = new \stdClass();
         $a->userid = $this->userid;
         $a->contextinstanceid = $this->contextinstanceid;
+
         return get_string('event:clip_editdetails_desc', 'switchcast', $a);
     }
 
@@ -81,7 +82,7 @@ class clip_editdetails extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/switchcast/view.php', array('id' => $this->contextinstanceid));
+        return new \moodle_url('/mod/switchcast/view.php', ['id' => $this->contextinstanceid]);
     }
 
     /**
@@ -93,9 +94,7 @@ class clip_editdetails extends \core\event\base {
         // The legacy log table expects a relative path to /mod/switchcast/.
         $logurl = substr($this->get_url()->out_as_local_url(), strlen('/mod/switchcast/'));
 
-        return array($this->courseid, 'switchcast', 'clip editdetails', $logurl, $this->objectid, $this->contextinstanceid);
+        return [$this->courseid, 'switchcast', 'clip editdetails', $logurl, $this->objectid, $this->contextinstanceid];
     }
-
-
 }
 
