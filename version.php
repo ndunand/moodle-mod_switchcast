@@ -26,11 +26,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version    = 2015012800;
-$module->requires   = 2014050800; // Requires Moodle 2.7
-$module->maturity   = MATURITY_STABLE;
-$module->release    = '1.5.3';
+$plugin->version    = 2015012800;
+$plugin->requires   = 2014050800; // Requires Moodle 2.7
+$plugin->maturity   = MATURITY_STABLE;
+$plugin->release    = '1.5.3';
 
-$module->component  = 'mod_switchcast';
-$module->cron       = 15*60;
+$plugin->component  = 'mod_switchcast';
+$plugin->cron       = 15*60;
 
