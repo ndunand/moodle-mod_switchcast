@@ -86,7 +86,7 @@ class mod_switchcast_mod_form extends moodleform_mod {
         }
         $mform->addRule('name', null, 'required', null, 'client');
 
-        $this->add_intro_editor(true, get_string('chatintro', 'chat'));
+        $this->standard_intro_elements();
 
         // Miscellaneous settings :
         $mform->addElement('header', 'miscellaneoussettingshdr', get_string('miscellaneoussettings', 'form'));

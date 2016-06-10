@@ -141,7 +141,7 @@
                 if (sortkey !== '' && sortdir !== '') {
                     $('.switchcast-clips-table th[data-sortkey='+sortkey+']').find('a').attr('class', 'sort '+sortdir);
                 }
-                $('a[href=#switchcast-inactive], a:not([href])').remove();
+                $('a[href="#switchcast-inactive"], a:not([href])').remove();
 
                 // only display table columns that are actually used
                 if (!show_recordingstation) {
