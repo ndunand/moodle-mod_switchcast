@@ -26,10 +26,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version    = 2016061000;
+$plugin->version    = 2016061001;
 $plugin->requires   = 2014050800; // Requires Moodle 2.7
 $plugin->maturity   = MATURITY_STABLE;
-$plugin->release    = '1.5.4 for Moodle 2.7-3.1';
+$plugin->release    = '1.5.5 for Moodle 2.7-3.1';
 
 $plugin->component  = 'mod_switchcast';
 $plugin->cron       = 15*60;
